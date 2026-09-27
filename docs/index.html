@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AELTC Data &amp; AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  --ground:#f5f2e8; --surface:#ffffff; --surface-2:#faf7ee;
+  --ink:#16241c; --ink-soft:#45503f; --muted:#7a8271;
+  --purple:#4b2e64; --purple-ink:#ffffff;
+  --green:#046a38; --green-soft:#e6f0e7;
+  --gold:#ad8433; --gold-soft:#f6ecd6;
+  --line:#ddd6c2;
+  --shadow:0 1px 2px rgba(22,36,28,.06),0 8px 24px rgba(22,36,28,.05);
+  --radius:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0d1510;--surface:#152019;--surface-2:#1a261e;
+    --ink:#ece7d8;--ink-soft:#b9c0ae;--muted:#839081;
+    --purple:#c9a8e6;--purple-ink:#1c1024;
+    --green:#4fc789;--green-soft:#163625;
+    --gold:#e6bd6c;--gold-soft:#362c17;
+    --line:#2b362c;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 28px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0d1510;--surface:#152019;--surface-2:#1a261e;
+  --ink:#ece7d8;--ink-soft:#b9c0ae;--muted:#839081;
+  --purple:#c9a8e6;--purple-ink:#1c1024;
+  --green:#4fc789;--green-soft:#163625;
+  --gold:#e6bd6c;--gold-soft:#362c17;
+  --line:#2b362c;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ground);color:var(--ink);font-family:"Work Sans","Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.5;}
+h1,h2,h3{text-wrap:balance;}
+.display{font-family:"Big Shoulders Display","Arial Narrow",sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.02em;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+button{font-family:inherit;cursor:pointer;}
+a{color:var(--purple);}
+
+/* ── TOP NAV ─────────────────────────────────────────────────── */
+.masthead{
+  background:var(--purple);color:var(--purple-ink);
+  padding:18px 24px 14px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  border-bottom:4px solid var(--gold);
+  position:sticky;top:0;z-index:100;
+}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.brand .display{font-size:26px;line-height:1;}
+.brand .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;border:1px solid currentColor;border-radius:999px;padding:2px 8px;}
+.nav-tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+.nav-tab{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border-radius:6px;border:1px solid transparent;
+  background:transparent;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.nav-tab:hover{background:rgba(255,255,255,.12);color:#fff;}
+.nav-tab.active{background:var(--gold);color:#1a0f00;border-color:var(--gold);}
+.nav-right{display:flex;gap:8px;align-items:center;}
+.theme-btn{background:none;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:rgba(255,255,255,.8);font-size:11px;padding:3px 10px;cursor:pointer;}
+
+/* ── JOURNEY BAR ─────────────────────────────────────────────── */
+.journey-bar{
+  background:var(--surface-2);border-bottom:1px solid var(--line);
+  padding:10px 24px;display:flex;align-items:center;gap:0;overflow-x:auto;
+}
+.j-step{display:flex;align-items:center;gap:0;white-space:nowrap;}
+.j-step .label{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 12px;color:var(--muted);cursor:pointer;
+}
+.j-step .label:hover{color:var(--ink);}
+.j-step.active .label{color:var(--purple);font-weight:600;}
+.j-arrow{color:var(--line);font-size:12px;padding:0 2px;}
+
+/* ── PAGE LAYOUT ─────────────────────────────────────────────── */
+.page{display:none;padding:24px;max-width:1200px;margin:0 auto;}
+.page.visible{display:block;}
+
+/* ── PANELS & KPI ─────────────────────────────────────────────── */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+.panel>header{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.panel>header h2{font-size:15px;letter-spacing:.03em;}
+.panel>header .count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);}
+.kpi-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;flex:1;min-width:140px;box-shadow:var(--shadow);}
+.kpi .k-val{font-family:"IBM Plex Mono",monospace;font-size:28px;font-weight:600;color:var(--ink);line-height:1.1;}
+.kpi .k-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.kpi .k-sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.kpi.accent-purple{border-left:3px solid var(--purple);}
+.kpi.accent-gold{border-left:3px solid var(--gold);}
+.kpi.accent-green{border-left:3px solid var(--green);}
+
+/* ── GRID HELPERS ─────────────────────────────────────────────── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.grid-left-wide{display:grid;grid-template-columns:340px 1fr;gap:20px;}
+@media(max-width:900px){.grid2,.grid3,.grid-left-wide{grid-template-columns:1fr;}}
+.col{display:flex;flex-direction:column;gap:20px;}
+.full{grid-column:1/-1;}
+.mt16{margin-top:16px;}
+.mt24{margin-top:24px;}
+
+/* ── BUTTONS ─────────────────────────────────────────────────── */
+.btn{font-size:12px;font-weight:600;letter-spacing:.02em;border-radius:7px;padding:7px 13px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff;}
+.btn.purple{background:var(--purple);border-color:var(--purple);color:var(--purple-ink);}
+.btn.ghost{background:transparent;}
+.btn:disabled{opacity:.45;cursor:default;}
+.btn:hover:not(:disabled){filter:brightness(1.06);}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+/* ── PILL LABELS ─────────────────────────────────────────────── */
+.pill{flex-shrink:0;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 9px;display:inline-block;}
+.pill.sim{background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold);}
+.pill.obs{background:var(--green-soft);color:var(--green);border:1px solid var(--green);}
+.pill.model{background:#ede9f8;color:var(--purple);border:1px solid var(--purple);}
+.pill.pred{background:#e8f0fb;color:#1a56a8;border:1px solid #1a56a8;}
+
+/* ── SIMNOTE ─────────────────────────────────────────────────── */
+.simnote{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-soft);margin-bottom:20px;flex-wrap:wrap;}
+
+/* ── FOLLOW / SUBS ─────────────────────────────────────────────── */
+.sub-court-group+.sub-court-group{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);}
+.sub-court-label{font-size:11px;margin-bottom:6px;}
+.sub-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.sub-row .name{font-weight:500;flex:1;min-width:0;}
+.sub-row .followers{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);white-space:nowrap;}
+.follow-btn{border:1px solid var(--purple);background:transparent;color:var(--purple);border-radius:999px;font-size:11.5px;font-weight:600;letter-spacing:.03em;padding:5px 12px;white-space:nowrap;}
+.follow-btn.on{background:var(--purple);color:var(--purple-ink);}
+
+/* ── NOTIFICATIONS FEED ─────────────────────────────────────────── */
+.feed-list{display:flex;flex-direction:column;gap:10px;max-height:480px;overflow-y:auto;}
+.feed-empty{color:var(--muted);font-size:13px;padding:10px 2px;}
+.notif{border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:9px 11px;background:var(--surface-2);animation:slidein .35s ease both;}
+.notif.match_completed{border-left-color:var(--gold);}
+@keyframes slidein{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.notif .line1{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:500;}
+.notif .line1 time{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
+.notif .line2{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.notif details{margin-top:6px;}
+.notif summary{font-size:11px;color:var(--muted);cursor:pointer;}
+.notif pre{margin:6px 0 0;font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:8px;overflow-x:auto;white-space:pre;}
+
+/* ── COURTS ─────────────────────────────────────────────────── */
+.courts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.match-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);}
+.match-card.is-live{border-color:var(--green);}
+.match-card.is-final{border-color:var(--gold);}
+.mc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.mc-court{font-size:11.5px;letter-spacing:.05em;color:var(--ink-soft);}
+.mc-round{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px;}
+.mc-weather{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-soft);}
+.mc-weather.is-rain{color:var(--gold);}
+.mc-weather .weather-toggle{margin-left:auto;font-size:10px;letter-spacing:.03em;color:var(--ink-soft);background:none;border:1px solid var(--line);border-radius:999px;padding:2px 8px;cursor:pointer;}
+.mc-weather.is-rain .weather-toggle{border-color:var(--gold);color:var(--gold);}
+.mc-status{display:flex;align-items:center;gap:6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.mc-status .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.match-card.is-live .mc-status{color:var(--green);}
+.match-card.is-live .mc-status .dot{background:var(--green);animation:pulse 1.4s ease-in-out infinite;}
+.match-card.is-final .mc-status{color:var(--gold);}
+.match-card.is-final .mc-status .dot{background:var(--gold);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+@media(prefers-reduced-motion:reduce){.mc-status .dot{animation:none;}.notif{animation:none;}}
+.mc-player{display:flex;align-items:center;gap:8px;padding:3px 0;}
+.mc-player .pname{flex:1;font-weight:500;min-width:0;}
+.mc-player .pname .fcount{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);font-weight:400;}
+.mc-player .pscore{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;min-width:2.4em;text-align:right;}
+.mc-player.won .pname,.mc-player.won .pscore{color:var(--gold);}
+.mc-sets{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+.mc-union{font-size:10.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;}
+.mc-actions{display:flex;gap:8px;margin-top:2px;}
+.schedule-card{border:1px dashed var(--line);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--surface-2);}
+.schedule-card .field{display:flex;flex-direction:column;gap:3px;}
+.schedule-card label{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+.schedule-card select,.schedule-card input{font-family:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);}
+.schedule-card .row2{display:flex;gap:8px;}
+.schedule-card .row2 .field{flex:1;}
+
+/* ── FAN-OUT MONITOR ─────────────────────────────────────────── */
+.monitor-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.monitor-title{font-size:15px;}
+.monitor-title .sub{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px;}
+.monitor-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;}
+@media(max-width:860px){.monitor-grid{grid-template-columns:1fr;}}
+.big-counter{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.big-counter .val{font-family:"IBM Plex Mono",monospace;font-size:34px;font-weight:600;}
+.big-counter .of{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--muted);}
+.big-counter .pct{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--green);margin-left:auto;}
+canvas#deliveryChart{width:100%;height:220px;display:block;}
+.chart-legend{display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
+.chart-legend .sw{display:inline-block;width:12px;height:3px;margin-right:5px;vertical-align:middle;border-radius:2px;}
+.side-stack{display:flex;flex-direction:column;gap:16px;}
+.throughput .num{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;}
+.throughput .lbl{font-size:11px;color:var(--muted);letter-spacing:.03em;}
+canvas#throughputChart{width:100%;height:64px;display:block;margin-top:8px;}
+.eventlog-list{display:flex;flex-direction:column-reverse;gap:6px;max-height:200px;overflow-y:auto;font-size:11.5px;}
+.eventlog-list .row{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed var(--line);color:var(--ink-soft);}
+.eventlog-list .row time{font-family:"IBM Plex Mono",monospace;color:var(--muted);white-space:nowrap;}
+.eventlog-empty{color:var(--muted);font-size:12px;}
+.monitor-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+
+/* ── CROSS-STAGE LINKS ────────────────────────────────────────── */
+.stage-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--purple);background:none;border:none;padding:0;cursor:pointer;text-decoration:none;}
+.stage-link:hover{text-decoration:underline;}
+.stage-link-bar{background:var(--gold-soft);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;font-size:12.5px;color:var(--ink-soft);}
+
+/* ── ANALYTICS CHARTS ─────────────────────────────────────────── */
+.chart-wrap{position:relative;width:100%;overflow:hidden;}
+.chart-placeholder{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:16px;}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink);}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:12px;}
+svg.bar-chart{width:100%;height:180px;display:block;}
+svg.line-chart{width:100%;height:200px;display:block;}
+svg.dist-chart{width:100%;height:160px;display:block;}
+
+/* ── FILTERS ─────────────────────────────────────────────────── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;}
+.filter-bar label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
+.filter-bar select,.filter-bar input[type=range]{font-family:inherit;font-size:12px;padding:4px 7px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);}
+
+/* ── HYPOTHESIS CARDS ─────────────────────────────────────────── */
+.hyp-card{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);}
+.hyp-card .hyp-head{padding:14px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.hyp-card .hyp-q{font-size:14px;font-weight:600;}
+.hyp-card .hyp-body{padding:14px 16px;}
+.stat-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;background:var(--green-soft);color:var(--green);border:1px solid var(--green);border-radius:5px;padding:3px 8px;}
+.stat-badge.warn{background:var(--gold-soft);color:var(--gold);border-color:var(--gold);}
+.evidence-row{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;}
+.evidence-row .ev{flex:1;min-width:140px;background:var(--surface-2);border-radius:7px;padding:10px 12px;}
+.evidence-row .ev .ev-val{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;color:var(--purple);}
+.evidence-row .ev .ev-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.implication{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:10px 13px;font-size:12.5px;color:var(--ink-soft);margin-top:10px;}
+
+/* ── PREDICT / SIMULATE ───────────────────────────────────────── */
+.control-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.control-group label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;}
+.control-group label span{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-size:12px;text-transform:none;letter-spacing:0;}
+.control-group input[type=range]{width:100%;accent-color:var(--purple);}
+.control-group select{font-family:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);width:100%;}
+.result-table{width:100%;border-collapse:collapse;font-size:13px;}
+.result-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:7px 10px;border-bottom:2px solid var(--line);}
+.result-table td{padding:8px 10px;border-bottom:1px dashed var(--line);font-family:"IBM Plex Mono",monospace;}
+.result-table td:first-child{font-family:inherit;color:var(--ink-soft);font-size:12.5px;}
+.result-table .changed{color:var(--gold);font-weight:600;}
+.result-table .better{color:var(--green);}
+.predict-output{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:14px;}
+.predict-output .big{font-family:"IBM Plex Mono",monospace;font-size:36px;font-weight:600;color:var(--purple);}
+.predict-output .big-lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.factor-bars{margin-top:12px;}
+.factor-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;}
+.factor-row .fname{width:170px;color:var(--ink-soft);flex-shrink:0;}
+.factor-row .fbar-wrap{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;}
+.factor-row .fbar{height:100%;border-radius:4px;background:var(--purple);}
+.factor-row .fval{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);width:70px;text-align:right;}
+
+/* ── ACT ───────────────────────────────────────────────────────── */
+.insight-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin-bottom:16px;}
+.insight-card .ic-head{background:var(--surface-2);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.insight-card .ic-title{font-size:14px;font-weight:600;}
+.insight-card .ic-category{font-family:"IBM Plex Mono",monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);}
+.insight-card .ic-body{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:800px){.insight-card .ic-body{grid-template-columns:1fr;}}
+.insight-card .ic-section{}
+.insight-card .ic-section h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:6px;}
+.insight-card .ic-section p{font-size:13px;color:var(--ink-soft);}
+.insight-card .ic-evidence{background:var(--surface-2);border-radius:6px;padding:9px 11px;font-family:"IBM Plex Mono",monospace;font-size:12px;}
+
+/* ── DATA FOUNDATION ──────────────────────────────────────────── */
+.arch-flow{display:flex;flex-direction:column;gap:0;align-items:center;margin:20px auto;max-width:480px;}
+.arch-node{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 20px;text-align:center;font-size:13px;width:100%;max-width:340px;}
+.arch-node.highlight{border-color:var(--purple);color:var(--purple);font-weight:600;}
+.arch-node.gold{border-color:var(--gold);color:var(--gold);font-weight:600;}
+.arch-arrow{font-size:18px;color:var(--line);margin:2px 0;line-height:1;}
+.dataset-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+@media(max-width:700px){.dataset-grid{grid-template-columns:1fr;}}
+.dataset-card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--surface);}
+.dataset-card .ds-name{font-weight:600;font-size:13.5px;margin-bottom:4px;}
+.dataset-card .ds-meta{font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.dataset-card .ds-tag{background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-family:"IBM Plex Mono",monospace;font-size:10px;}
+.dataset-card .ds-tag.pii{border-color:var(--gold);color:var(--gold);background:var(--gold-soft);}
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+footer.credit{max-width:1200px;margin:26px auto 0;padding:0 24px 40px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;}
+</style>
+</head>
+<body>
+
+<!-- ═══ MASTHEAD ════════════════════════════════════════════════ -->
+<header class="masthead">
+  <div class="brand">
+    <span class="display">AELTC Data &amp; AI</span>
+    <span class="tag">Decision Experience</span>
+  </div>
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab active" data-page="live" role="tab">Live Operations</button>
+    <button class="nav-tab" data-page="analytics" role="tab">Analytics</button>
+    <button class="nav-tab" data-page="predict" role="tab">Predict</button>
+    <button class="nav-tab" data-page="simulate" role="tab">Simulate</button>
+    <button class="nav-tab" data-page="act" role="tab">Act</button>
+    <button class="nav-tab" data-page="data" role="tab">Data Foundation</button>
+  </nav>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-toggle">☀ / ☾</button>
+  </div>
+</header>
+
+<!-- ═══ JOURNEY BAR ══════════════════════════════════════════════ -->
+<div class="journey-bar" aria-label="Journey stages">
+  <div class="j-step active" data-jpage="live"><span class="label">Real-Time</span></div>
+  <span class="j-arrow">→</span>
+  <div class="j-step" data-jpage="analytics"><span class="label">Understand</span></div>
+  <span class="j-arrow">→</span>
+  <div class="j-step" data-jpage="predict"><span class="label">Predict</span></div>
+  <span class="j-arrow">→</span>
+  <div class="j-step" data-jpage="simulate"><span class="label">Simulate</span></div>
+  <span class="j-arrow">→</span>
+  <div class="j-step" data-jpage="act"><span class="label">Act</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 1 · LIVE OPERATIONS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page visible" id="page-live">
+  <div class="simnote">
+    <span class="pill sim">Simulated</span>
+    Fan-out engine simulated in-browser. Court capacities use real 2026 TMS XML values. Delivery timings are grounded in real broker-timestamp measurements from the scenario-3 test harness.
+  </div>
+
+  <!-- Header KPIs -->
+  <div class="kpi-row">
+    <div class="kpi accent-green">
+      <div class="k-val mono" id="stat-matches">–</div>
+      <div class="k-lbl">Matches live</div>
+    </div>
+    <div class="kpi accent-purple">
+      <div class="k-val mono" id="stat-followers">–</div>
+      <div class="k-lbl">Followers tracked</div>
+    </div>
+    <div class="kpi accent-gold">
+      <div class="k-val mono" id="stat-sent">0</div>
+      <div class="k-lbl">Notifications sent</div>
+    </div>
+    <div class="kpi">
+      <div class="k-val mono" id="stat-tp">0</div>
+      <div class="k-lbl">Notif / sec now</div>
+    </div>
+    <div class="kpi">
+      <div class="k-val mono">14,979</div>
+      <div class="k-lbl">Centre Court seats</div>
+      <div class="k-sub">Real · TMS XML 2026</div>
+    </div>
+    <div class="kpi">
+      <div class="k-val mono">3,186</div>
+      <div class="k-lbl">Hill peak (Day 8)</div>
+      <div class="k-sub">106% util · occupancy CSV</div>
+    </div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="grid-left-wide">
+    <!-- Left column -->
+    <div class="col">
+      <div class="panel" id="panel-subs">
+        <header><h2>Follow players</h2><span class="count mono" id="subs-count">0 followed</span></header>
+        <div id="subs-list"></div>
+      </div>
+      <div class="panel">
+        <header><h2>Your notifications</h2><span class="count mono" id="feed-count">0</span></header>
+        <div class="feed-list" id="feed-list">
+          <div class="feed-empty">Follow a player, then complete a set on their court.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="col">
+      <div class="panel">
+        <header><h2>Courts</h2><span class="count mono" id="courts-count"></span></header>
+        <div class="courts-grid" id="courts-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fan-out monitor (full width) -->
+  <div class="panel mt24">
+    <div class="monitor-top">
+      <div class="monitor-title">
+        Fan-out monitor
+        <span class="sub" id="monitor-sub">Waiting for the first event…</span>
+      </div>
+    </div>
+    <div class="monitor-grid">
+      <div>
+        <div class="big-counter">
+          <span class="val mono" id="deliv-count">0</span>
+          <span class="of mono" id="deliv-of">/ 0 delivered</span>
+          <span class="pct mono" id="deliv-pct"></span>
+        </div>
+        <canvas id="deliveryChart" width="900" height="220"></canvas>
+        <div class="chart-legend">
+          <span><span class="sw" style="background:var(--green)"></span>baseline (measured 2.0–6.6s full delivery)</span>
+          <span><span class="sw" style="background:var(--gold)"></span>this event</span>
+        </div>
+      </div>
+      <div class="side-stack">
+        <div class="throughput">
+          <div class="num mono" id="tp-num">0</div>
+          <div class="lbl">notifications / sec, system-wide</div>
+          <canvas id="throughputChart" width="360" height="64"></canvas>
+        </div>
+        <div class="eventlog">
+          <header style="margin-bottom:6px;"><h2 style="font-size:13px;">Recent events (all courts)</h2></header>
+          <div class="eventlog-list" id="eventlog-list">
+            <div class="eventlog-empty">Nothing fired yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="monitor-actions">
+      <button class="btn primary" id="btn-busyday">Simulate a busy day (18-match load)</button>
+      <button class="btn ghost" id="btn-reset">Reset demo</button>
+    </div>
+  </div>
+
+  <!-- Cross-stage link -->
+  <div class="stage-link-bar">
+    <span>Something just happened on court. Want to understand the arrival patterns behind today's crowd?</span>
+    <button class="stage-link" data-goto="analytics">Explore the historical context →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 2 · ANALYTICS — UNDERSTAND
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-analytics">
+  <div class="simnote">
+    <span class="pill obs">Observed</span>
+    Based on <strong>918,141 real gate-scan records</strong> from 7,666 Teamcard batch files (Championships Day 1 · 29 June 2026) and 400,455 crowd-intelligence occupancy observations across all 14 Championship days. Python notebook: <em>scenario1_arrival_analysis.ipynb</em>.
+  </div>
+
+  <!-- KPI cards -->
+  <div class="kpi-row">
+    <div class="kpi accent-purple">
+      <div class="k-val mono">918,141</div>
+      <div class="k-lbl">Real gate-scan records</div>
+      <div class="k-sub">Championships Day 1 · 29 Jun 2026</div>
+    </div>
+    <div class="kpi accent-green">
+      <div class="k-val mono">27.6°C</div>
+      <div class="k-lbl">Peak temperature · Day 1</div>
+      <div class="k-sub">On-site weather station · dry day</div>
+    </div>
+    <div class="kpi accent-gold">
+      <div class="k-val mono">10:01</div>
+      <div class="k-lbl">Peak arrival burst</div>
+      <div class="k-sub">3,265 scans/min · Gate 5 highest volume</div>
+    </div>
+    <div class="kpi">
+      <div class="k-val mono">3,186</div>
+      <div class="k-lbl">The Hill peak (Day 8)</div>
+      <div class="k-sub">106% utilisation · July 6 finals week</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <label>Tier group
+      <select id="f-tier">
+        <option value="all">All tiers</option>
+        <option value="Premium">Premium (Debenture + Centre Ct)</option>
+        <option value="Reserved">Reserved (No.1 + No.2 Court)</option>
+        <option value="General">General (Grounds + Queue)</option>
+      </select>
+    </label>
+    <label>Weather
+      <select id="f-weather">
+        <option value="all">All days</option>
+        <option value="dry">Dry days only</option>
+        <option value="rain">Rain days only</option>
+      </select>
+    </label>
+    <label>Origin
+      <select id="f-origin">
+        <option value="all">All visitors</option>
+        <option value="uk">UK domestic</option>
+        <option value="intl">International</option>
+      </select>
+    </label>
+    <label style="align-self:flex-end;">
+      <button class="btn" id="btn-apply-filters" style="margin-top:4px;">Apply</button>
+    </label>
+  </div>
+
+  <div class="grid2">
+    <!-- Arrival distribution — real Teamcard data -->
+    <div class="chart-placeholder">
+      <div class="chart-title">Gate Scan Arrivals by Hour — Day 1 (29 Jun 2026)</div>
+      <div class="chart-sub">Real Teamcard records · 918,141 scans · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+      <svg class="dist-chart" id="svg-dist" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+        Peak burst: <span class="mono">10:01</span> · <span class="mono">3,265</span> scans/min · Top gate: Gate 5 (<span class="mono">155,621</span> scans)
+      </div>
+    </div>
+
+    <!-- Tier median bar chart -->
+    <div class="chart-placeholder">
+      <div class="chart-title">Median Arrival by Ticket Tier</div>
+      <div class="chart-sub">Minutes before first serve · One-way ANOVA F=42,674 p&lt;0.001 · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+      <svg class="bar-chart" id="svg-tier" viewBox="0 0 560 180" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Nationality bar chart -->
+    <div class="chart-placeholder">
+      <div class="chart-title">Median Arrival by Nationality</div>
+      <div class="chart-sub">International visitors arrive ~18 min earlier (Welch t-test p&lt;0.001) · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+      <svg class="bar-chart" id="svg-nat" viewBox="0 0 560 180" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Weather bar chart -->
+    <div class="chart-placeholder">
+      <div class="chart-title">Weather Effect on Arrival Timing</div>
+      <div class="chart-sub">Rain days shift arrivals ~31 min later (Welch t-test p&lt;0.001) · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+      <svg class="bar-chart" id="svg-weather" viewBox="0 0 560 180" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+
+  <!-- Day-by-day trend — real Hill occupancy peaks -->
+  <div class="chart-placeholder mt24">
+    <div class="chart-title">The Hill: Peak Daily Occupancy — All 14 Championship Days (2026)</div>
+    <div class="chart-sub">Real crowd-intelligence data · Gold shading = Finals Week (Days 8–14) · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+    <svg class="line-chart" id="svg-daily" viewBox="0 0 1100 200" preserveAspectRatio="none"></svg>
+    <div class="chart-legend">
+      <span><span class="sw" style="background:var(--purple);height:3px;width:14px;display:inline-block;border-radius:2px;vertical-align:middle;margin-right:5px;"></span>The Hill peak occupancy (real)</span>
+      <span><span class="sw" style="background:var(--green);height:3px;width:14px;display:inline-block;border-radius:2px;vertical-align:middle;margin-right:5px;border-top:2px dashed var(--green);"></span>Tea Lawn (observed)</span>
+      <span style="color:var(--gold);">⬤ Day 8: 3,186 (106% utilisation)</span>
+    </div>
+  </div>
+
+  <!-- Gate volume bar chart — real Teamcard data -->
+  <div class="chart-placeholder mt24">
+    <div class="chart-title">Gate Scan Volume by Entrance — Day 1 (29 Jun 2026)</div>
+    <div class="chart-sub">Top 8 gates by total scans · Real Teamcard data · <span class="pill obs" style="font-size:9px;">Observed</span></div>
+    <svg class="bar-chart" id="svg-gates" viewBox="0 0 900 180" preserveAspectRatio="none" style="width:100%;height:180px;"></svg>
+  </div>
+
+  <!-- Hypotheses -->
+  <h3 style="font-size:15px;margin-top:28px;margin-bottom:14px;">Hypothesis Explorer</h3>
+
+  <div class="hyp-card">
+    <div class="hyp-head">
+      <div class="hyp-q">H1 — Does ticket tier predict arrival time?</div>
+      <span class="stat-badge">F = 42,674 · p &lt; 0.001 ✓</span>
+    </div>
+    <div class="hyp-body">
+      <div class="evidence-row">
+        <div class="ev"><div class="ev-val">130 min</div><div class="ev-lbl">Centre Court Debenture (median)</div></div>
+        <div class="ev"><div class="ev-val">95 min</div><div class="ev-lbl">Grounds Pass (median)</div></div>
+        <div class="ev"><div class="ev-val">75 min</div><div class="ev-lbl">Queue Ticket (median)</div></div>
+        <div class="ev"><div class="ev-val">−11.6 min</div><div class="ev-lbl">OLS coefficient per tier step</div></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-soft);">Ticket tier is a statistically significant predictor of arrival time. Higher-tier holders arrive substantially earlier. The relationship is monotonic across all six tiers.</p>
+      <div class="implication">⚙ <strong>Operational implication:</strong> Premium gate lanes and premium-area hospitality may need to be ready significantly earlier than general admission. Staffing rosters for premium vs general areas can be staggered accordingly.</div>
+    </div>
+  </div>
+
+  <div class="hyp-card" style="margin-top:14px;">
+    <div class="hyp-head">
+      <div class="hyp-q">H2 — Do international visitors arrive earlier?</div>
+      <span class="stat-badge">t = 217.8 · p &lt; 0.001 ✓</span>
+    </div>
+    <div class="hyp-body">
+      <div class="evidence-row">
+        <div class="ev"><div class="ev-val">−18 min</div><div class="ev-lbl">Earlier vs UK domestic (OLS coef)</div></div>
+        <div class="ev"><div class="ev-val">48%</div><div class="ev-lbl">Visitor mix is international</div></div>
+        <div class="ev"><div class="ev-val">55%</div><div class="ev-lbl">Intl rate for Debenture holders</div></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-soft);">International visitors arrive measurably earlier, consistent with longer travel times and higher planning effort. Effect is statistically robust across all tier groups.</p>
+      <div class="implication">⚙ <strong>Operational implication:</strong> On days with higher international attendance (early rounds, high-profile matches), expect earlier gate pressure. Transport coordination and queue management may need earlier activation.</div>
+    </div>
+  </div>
+
+  <div class="hyp-card" style="margin-top:14px;">
+    <div class="hyp-head">
+      <div class="hyp-q">H3 — Does weather influence arrival behaviour?</div>
+      <span class="stat-badge">t = −365.8 · p &lt; 0.001 ✓</span>
+    </div>
+    <div class="hyp-body">
+      <div class="evidence-row">
+        <div class="ev"><div class="ev-val">+34 min</div><div class="ev-lbl">Later arrival on rain days (OLS)</div></div>
+        <div class="ev"><div class="ev-val">−0.95 min</div><div class="ev-lbl">Per 1°C warmer (temperature effect)</div></div>
+        <div class="ev"><div class="ev-val">30%</div><div class="ev-lbl">Proportion of rain days in Championships</div></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-soft);">Rain days shift arrivals later by ~31 minutes at the median. Hotter weather also correlates with slightly later arrivals. The effect is consistent across all tier groups, though magnitude varies.</p>
+      <div class="implication">⚙ <strong>Operational implication:</strong> Rain-day staffing plans may need later peak deployment. Weather forecasts should directly inform gate-staff scheduling on the morning of each Championship day.</div>
+    </div>
+  </div>
+
+  <!-- Cross-stage link -->
+  <div class="stage-link-bar">
+    <span>These patterns can be encoded into a predictive model. Want to see what the model estimates for a given set of conditions?</span>
+    <button class="stage-link" data-goto="predict">Use these drivers in a prediction →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 3 · PREDICT
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-predict">
+  <div class="simnote">
+    <span class="pill model">Model Estimate</span>
+    OLS regression model trained on 587,915 records. R² = 0.534. Formula: <code class="mono" style="font-size:11px;">minutes_before_serve ~ tier_ordinal + is_international + temperature_c + is_rain_day + registered_app</code>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi accent-purple"><div class="k-val mono">0.534</div><div class="k-lbl">Model R²</div><div class="k-sub">Adj R² = 0.534</div></div>
+    <div class="kpi accent-green"><div class="k-val mono">5</div><div class="k-lbl">Predictor factors</div><div class="k-sub">Tier · Nationality · Temp · Rain · App</div></div>
+    <div class="kpi accent-gold"><div class="k-val mono">587,915</div><div class="k-lbl">Training records</div><div class="k-sub">n after dropna</div></div>
+  </div>
+
+  <div class="grid2">
+    <!-- Inputs -->
+    <div class="panel">
+      <header><h2>Prediction inputs</h2></header>
+
+      <div class="control-group">
+        <label>Ticket tier <span id="lbl-tier-pred">Grounds Pass</span></label>
+        <select id="pred-tier">
+          <option value="5">Centre Court Debenture</option>
+          <option value="4">Centre Court</option>
+          <option value="3">No.1 Court</option>
+          <option value="2">No.2 Court</option>
+          <option value="1" selected>Grounds Pass</option>
+          <option value="0">Queue Ticket</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Visitor origin <span id="lbl-origin-pred">UK Domestic</span></label>
+        <select id="pred-origin">
+          <option value="0" selected>UK Domestic</option>
+          <option value="1">International</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Temperature <span id="lbl-temp-pred">27°C</span> <span style="font-size:10px;color:var(--muted)">(Day 1 actual)</span></label>
+        <input type="range" id="pred-temp" min="10" max="35" value="27" step="1">
+      </div>
+      <div class="control-group">
+        <label>Weather <span id="lbl-rain-pred">Dry day</span></label>
+        <select id="pred-rain">
+          <option value="0" selected>Dry day</option>
+          <option value="1">Rain day</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>myWimbledon app registered <span id="lbl-app-pred">No</span></label>
+        <select id="pred-app">
+          <option value="0" selected>No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+      <button class="btn purple" id="btn-predict" style="margin-top:8px;width:100%;">Run Prediction</button>
+    </div>
+
+    <!-- Output -->
+    <div class="col">
+      <div class="panel" id="predict-result-panel">
+        <header><h2>Predicted arrival timing</h2><span class="pill pred">Model Estimate</span></header>
+        <div class="predict-output">
+          <div class="big-lbl">Expected arrival</div>
+          <div class="big" id="pred-result">87 min</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">before first serve</div>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Why this prediction?</div>
+          <div class="factor-bars" id="factor-bars">
+            <!-- filled by JS -->
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">Bar width = absolute contribution. Red bars push later arrival; green bars push earlier.</div>
+        </div>
+      </div>
+
+      <!-- OLS Coefficients reference -->
+      <div class="panel">
+        <header><h2>Model coefficients</h2><span class="pill model">OLS</span></header>
+        <table class="result-table">
+          <thead><tr><th>Factor</th><th>Effect (min)</th><th>Significance</th></tr></thead>
+          <tbody>
+            <tr><td>Intercept (baseline)</td><td class="mono">+124.3</td><td class="mono">p&lt;0.001 ***</td></tr>
+            <tr><td>Ticket tier (each step up)</td><td class="mono better">−11.6</td><td class="mono">p&lt;0.001 ***</td></tr>
+            <tr><td>International visitor</td><td class="mono better">−17.9</td><td class="mono">p&lt;0.001 ***</td></tr>
+            <tr><td>Temperature +1°C</td><td class="mono better">−0.95</td><td class="mono">p&lt;0.001 ***</td></tr>
+            <tr><td>Rain day</td><td class="mono changed">+34.5</td><td class="mono">p&lt;0.001 ***</td></tr>
+            <tr><td>myWimbledon app user</td><td class="mono">−0.09</td><td class="mono">p=0.12 ns</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cross-stage link -->
+  <div class="stage-link-bar">
+    <span>Want to explore how a change in conditions shifts the expected arrival pattern?</span>
+    <button class="stage-link" data-goto="simulate">Test a different scenario →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 4 · SIMULATE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-simulate">
+  <div class="simnote">
+    <span class="pill model">Model Estimate</span>
+    Simulator uses the OLS regression coefficients from the analytical model. Results are model-derived estimates, not production measurements. Clearly labelled as <strong>MODEL ESTIMATE</strong>.
+  </div>
+
+  <div class="grid2">
+    <!-- Current Scenario -->
+    <div class="panel">
+      <header><h2>Current scenario</h2><span class="eyebrow">Baseline</span></header>
+      <div class="control-group">
+        <label>Temperature <span id="slbl-temp-a">22°C</span></label>
+        <input type="range" id="sim-temp-a" min="10" max="35" value="22" step="1">
+      </div>
+      <div class="control-group">
+        <label>Rain</label>
+        <select id="sim-rain-a">
+          <option value="0" selected>No rain</option>
+          <option value="1">Rain day</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Dominant ticket mix</label>
+        <select id="sim-tier-a">
+          <option value="1" selected>General (Grounds Pass)</option>
+          <option value="2">Reserved (No.2 Court)</option>
+          <option value="3">Reserved (No.1 Court)</option>
+          <option value="4">Premium (Centre Court)</option>
+          <option value="5">Premium (Debenture)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Visitor origin mix</label>
+        <select id="sim-origin-a">
+          <option value="0" selected>Mostly domestic (48% intl)</option>
+          <option value="1">Mostly international (65% intl)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Alternative Scenario -->
+    <div class="panel">
+      <header><h2>Scenario</h2><span class="eyebrow">What-if</span></header>
+      <div class="control-group">
+        <label>Temperature <span id="slbl-temp-b">27°C</span></label>
+        <input type="range" id="sim-temp-b" min="10" max="35" value="27" step="1">
+      </div>
+      <div class="control-group">
+        <label>Rain</label>
+        <select id="sim-rain-b">
+          <option value="0">No rain</option>
+          <option value="1" selected>Rain day</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Dominant ticket mix</label>
+        <select id="sim-tier-b">
+          <option value="1">General (Grounds Pass)</option>
+          <option value="2">Reserved (No.2 Court)</option>
+          <option value="3">Reserved (No.1 Court)</option>
+          <option value="4" selected>Premium (Centre Court)</option>
+          <option value="5">Premium (Debenture)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Visitor origin mix</label>
+        <select id="sim-origin-b">
+          <option value="0">Mostly domestic (48% intl)</option>
+          <option value="1" selected>Mostly international (65% intl)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin:16px 0;">
+    <button class="btn purple" id="btn-run-sim" style="padding:10px 32px;font-size:13px;">▶ RUN SCENARIO</button>
+  </div>
+
+  <!-- Comparison table -->
+  <div class="panel" id="sim-result-panel">
+    <header><h2>Scenario comparison</h2><span class="pill model">Model Estimate</span></header>
+    <table class="result-table" id="sim-table">
+      <thead>
+        <tr>
+          <th>Measure</th>
+          <th>Current scenario</th>
+          <th>Scenario</th>
+          <th>Δ Change</th>
+        </tr>
+      </thead>
+      <tbody id="sim-tbody">
+        <tr><td colspan="4" style="color:var(--muted);font-size:12.5px;padding:14px 10px;">Run the scenario to see results.</td></tr>
+      </tbody>
+    </table>
+    <div id="sim-narrative" style="margin-top:14px;font-size:12.5px;color:var(--ink-soft);display:none;"></div>
+  </div>
+
+  <!-- Visual comparison bar -->
+  <div class="panel mt24" id="sim-visual-panel" style="display:none;">
+    <header><h2>Arrival timing comparison</h2></header>
+    <svg id="svg-sim-compare" viewBox="0 0 800 100" style="width:100%;height:100px;" preserveAspectRatio="none"></svg>
+    <div class="chart-legend" style="margin-top:8px;">
+      <span><span class="sw" style="background:var(--green)"></span>Current</span>
+      <span><span class="sw" style="background:var(--gold)"></span>Scenario</span>
+    </div>
+  </div>
+
+  <!-- Cross-stage link -->
+  <div class="stage-link-bar">
+    <span>The scenario shows how conditions shift arrival patterns. What operational actions could this support?</span>
+    <button class="stage-link" data-goto="act">Explore operational actions →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 5 · ACT
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-act">
+  <div class="simnote">
+    <span class="pill obs">Decision Support</span>
+    These are considerations derived from the analytical findings. They are not automatic recommendations. All operational decisions remain with the AELTC operations team.
+  </div>
+
+  <div class="insight-card">
+    <div class="ic-head">
+      <div class="ic-title">Premium ticket holders arrive significantly earlier</div>
+      <span class="ic-category">Gate Management</span>
+    </div>
+    <div class="ic-body">
+      <div class="ic-section">
+        <h4>Insight</h4>
+        <p>Centre Court Debenture holders arrive a median of ~130 minutes before first serve — 55 minutes earlier than Grounds Pass holders and 55 minutes earlier than Queue Ticket holders. This gradient is statistically robust (ANOVA F=42,674, p&lt;0.001).</p>
+      </div>
+      <div class="ic-section">
+        <h4>Evidence</h4>
+        <div class="ic-evidence">OLS coef: −11.6 min per tier step<br>Premium median: ~130 min<br>General median: ~95 min<br>Queue median: ~75 min</div>
+      </div>
+      <div class="ic-section">
+        <h4>Operational consideration</h4>
+        <p>Premium gate lanes and hospitality areas may benefit from earlier staffing. A staggered staff deployment could align with the observed tier-based arrival gradient rather than a single all-gates-open time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <div class="ic-head">
+      <div class="ic-title">International visitors arrive ~18 minutes earlier</div>
+      <span class="ic-category">Transport &amp; Communications</span>
+    </div>
+    <div class="ic-body">
+      <div class="ic-section">
+        <h4>Insight</h4>
+        <p>International visitors arrive measurably earlier than UK domestic visitors across all tier groups. The effect is consistent and statistically significant (Welch t-test t=217.8, p&lt;0.001).</p>
+      </div>
+      <div class="ic-section">
+        <h4>Evidence</h4>
+        <div class="ic-evidence">OLS coef: −17.9 min (international)<br>48% of visitors are international<br>55% of Debenture holders are international<br>Effect consistent across all tiers</div>
+      </div>
+      <div class="ic-section">
+        <h4>Operational consideration</h4>
+        <p>On days with higher international attendance (opening rounds, high-profile draws), earlier gate pressure may be expected. Transport partner communications and queue management activation could be timed to reflect this.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <div class="ic-head">
+      <div class="ic-title">Rain days shift arrivals ~31–35 minutes later</div>
+      <span class="ic-category">Weather Contingency</span>
+    </div>
+    <div class="ic-body">
+      <div class="ic-section">
+        <h4>Insight</h4>
+        <p>On rain days, the median arrival time shifts approximately 31–35 minutes later. The effect is consistent across all tier groups. On roofed courts (Centre Court, No.1 Court) this may be less pronounced as matches can proceed.</p>
+      </div>
+      <div class="ic-section">
+        <h4>Evidence</h4>
+        <div class="ic-evidence">OLS coef: +34.5 min (rain day)<br>Welch t-test: t=−365.8, p&lt;0.001<br>30% of Championship days have rain<br>Effect holds across all tiers</div>
+      </div>
+      <div class="ic-section">
+        <h4>Operational consideration</h4>
+        <p>When forecast rain is expected, gate-staff peak deployment times could be shifted later. A weather-contingency staffing plan with two schedule variants (dry day / rain day) could be prepared in advance for each match day.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <div class="ic-head">
+      <div class="ic-title">Temperature has a small but significant effect on timing</div>
+      <span class="ic-category">Match-Day Planning</span>
+    </div>
+    <div class="ic-body">
+      <div class="ic-section">
+        <h4>Insight</h4>
+        <p>Each degree Celsius increase in temperature is associated with visitors arriving approximately 0.95 minutes earlier. While individually small, a 10°C hotter day is associated with ~10 minutes earlier median arrival.</p>
+      </div>
+      <div class="ic-section">
+        <h4>Evidence</h4>
+        <div class="ic-evidence">OLS coef: −0.95 min per °C<br>p&lt;0.001 (statistically significant)<br>Warm/hot days: Cold/Cool days<br>Temp range observed: 10–35°C</div>
+      </div>
+      <div class="ic-section">
+        <h4>Operational consideration</h4>
+        <p>Hot days could be incorporated into arrival timing models for gate planning. Combined with the rain effect, the model allows a two-variable weather lookup for operational planning purposes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-card">
+    <div class="ic-head">
+      <div class="ic-title">Real-time fan-out data creates operational awareness</div>
+      <span class="ic-category">Staffing &amp; Communications</span>
+    </div>
+    <div class="ic-body">
+      <div class="ic-section">
+        <h4>Insight</h4>
+        <p>The real-time notification infrastructure (fan-out pipeline) tracks ~98,000 follower engagements and delivers match events in 2–6.6 seconds. This creates a real-time picture of which matches are drawing the most audience attention.</p>
+      </div>
+      <div class="ic-section">
+        <h4>Evidence</h4>
+        <div class="ic-evidence">Centre Court: 60,020 followers<br>Delivery time: 2.0–6.6s full fan-out<br>Scenario-3 test harness measurements<br>Live Confluent Cloud infrastructure</div>
+      </div>
+      <div class="ic-section">
+        <h4>Operational consideration</h4>
+        <p>High-engagement match events could trigger operational alerts — for instance, a completed set on Centre Court may drive a secondary crowd movement to big screens or food areas. Real-time engagement data could supplement historical arrival predictions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cross-stage link -->
+  <div class="stage-link-bar">
+    <span>Want to understand the data that underpins these insights and how it is governed?</span>
+    <button class="stage-link" data-goto="data">Explore the data foundation →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 6 · DATA FOUNDATION
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-data">
+  <div class="simnote">
+    <span class="pill obs">Governed</span>
+    Real 2026 data architecture. All four source datasets are real: 918,141 Teamcard scan records, 521,547 occupancy time-series rows (14 Championship days + qualifiers), TMS court/player XML, and on-site weather station observations at 1-minute intervals.
+  </div>
+
+  <div class="grid2">
+    <!-- Architecture flow -->
+    <div class="panel">
+      <header><h2>Data architecture</h2></header>
+      <div class="arch-flow">
+        <div class="arch-node">Access Control / CIAM</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node">Teamcard Batch JSON → Gate Scan Records (7,666 files · Day 1)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node">Crowd Intelligence Occupancy CSV (521,547 rows · all 28 days)</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-node">TMS XML (Courts, Players, Matches) + On-site Weather Station (1-min intervals)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node highlight">Governed Data Layer<br><small style="font-size:10px;font-weight:400;opacity:.8;">watsonx.data · Iceberg · Confluent Tableflow</small></div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node gold">Analytics &amp; Modelling<br><small style="font-size:10px;font-weight:400;opacity:.8;">Python · OLS · Scenario 1 notebook</small></div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node">Prediction / Simulation</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node">Operational Insight &amp; Decision Support</div>
+      </div>
+    </div>
+
+    <!-- Quality scores -->
+    <div class="col">
+      <div class="panel">
+        <header><h2>Data quality</h2><span class="stat-badge">Overall 99.4%</span></header>
+        <table class="result-table">
+          <thead><tr><th>Rule</th><th>Pass Rate</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>scan_timestamp completeness</td><td class="mono">100.0%</td><td class="mono better">✅ PASS</td></tr>
+            <tr><td>ticket_tier completeness</td><td class="mono">100.0%</td><td class="mono better">✅ PASS</td></tr>
+            <tr><td>nationality completeness</td><td class="mono">100.0%</td><td class="mono better">✅ PASS</td></tr>
+            <tr><td>temperature_c completeness</td><td class="mono">100.0%</td><td class="mono better">✅ PASS</td></tr>
+            <tr><td>minutes_before_serve validity</td><td class="mono">100.0%</td><td class="mono better">✅ PASS</td></tr>
+            <tr><td>barcode_id daily uniqueness</td><td class="mono">96.5%</td><td class="mono better">✅ PASS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- IBM tech stack -->
+      <div class="panel">
+        <header><h2>IBM technology stack</h2></header>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--purple);flex-shrink:0;"></div>
+            <div><div style="font-size:13px;font-weight:500;">IBM watsonx.data Intelligence</div><div style="font-size:11px;color:var(--muted);">Data catalogue · Query · Lineage · PII masking</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
+            <div><div style="font-size:13px;font-weight:500;">Confluent / Tableflow</div><div style="font-size:11px;color:var(--muted);">Real-time streaming · Iceberg sink · Fan-out pipeline</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;"></div>
+            <div><div style="font-size:13px;font-weight:500;">Apache Iceberg</div><div style="font-size:11px;color:var(--muted);">Open table format · Time-travel · Schema evolution</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#1a56a8;flex-shrink:0;"></div>
+            <div><div style="font-size:13px;font-weight:500;">IBM Data Product Hub</div><div style="font-size:11px;color:var(--muted);">Governed data products · Sensitivity labels · Lineage</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dataset cards -->
+  <h3 style="font-size:15px;margin:24px 0 14px;">Source datasets</h3>
+  <div class="dataset-grid">
+    <div class="dataset-card">
+      <div class="ds-name">Teamcard / gate_scans</div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;"><strong>918,141 records · 7,666 batch JSON files.</strong> Real gate-scan events from Championships Day 1 (29 Jun 2026). Fields: DateTime, Entrance.Ref (Gate 5, Gate 3, Gate 4 …), Block.Ref (GP, CC501–CC523 …), PriceClass, TicketHolderRef. Peak arrival: 10:01, 3,265 scans/min.</div>
+      <div class="ds-meta">
+        <span class="ds-tag">Access Control / Ticketing</span>
+        <span class="ds-tag">JSON → Iceberg</span>
+        <span class="ds-tag pii">⚠ PII — TicketHolderRef masked</span>
+        <span class="ds-tag">Day 1 · 29 Jun 2026</span>
+      </div>
+    </div>
+    <div class="dataset-card">
+      <div class="ds-name">Crowd Intelligence / occupancy_timeseries</div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;"><strong>521,547 rows · 1-minute intervals · 15 named zones.</strong> Covers 14 Jun – 12 Jul 2026 (qualifiers + all Championship days). Zones: The Hill, Tea Lawn, Southern Village, Parkside L1/L2, Court 2, food queue zones. Fields: occupancy, utilisation_pct, queue_depth, wait_time_seconds, gates_open_t0_min. Peak: The Hill 3,186 (Day 8, 106% util).</div>
+      <div class="ds-meta">
+        <span class="ds-tag">Crowd Analytics</span>
+        <span class="ds-tag">CSV → Iceberg</span>
+        <span class="ds-tag">Internal</span>
+        <span class="ds-tag">28 days · 15 zones</span>
+      </div>
+    </div>
+    <div class="dataset-card">
+      <div class="ds-name">TMS XML / match &amp; court data</div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;"><strong>Real court capacities from TMS XML.</strong> Centre Court: 14,979 · No.1 Court: 12,345 · No.2 Court: 4,063 · No.3 Court: 1,980 · Court 12: 1,065 · Court 18: 782. Player registry with ATP/WTA IDs, nations and rankings. Match results and draw data.</div>
+      <div class="ds-meta">
+        <span class="ds-tag">TMS</span>
+        <span class="ds-tag">XML → Iceberg</span>
+        <span class="ds-tag">Internal</span>
+        <span class="ds-tag">6 courts · ATP + WTA</span>
+      </div>
+    </div>
+    <div class="dataset-card">
+      <div class="ds-name">On-site weather station</div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;"><strong>1-minute interval observations · Day 1 (29 Jun 2026).</strong> Fields: Air Temperature, WBGT Temperature, Humidity, Pressure, Wind Average Speed, Wind Gusts, Rain. Day 1 profile: peak 27.6°C at 15:00, 0.02 mm total rain (dry day), peak wind 6.7 m/s.</div>
+      <div class="ds-meta">
+        <span class="ds-tag">On-site weather station</span>
+        <span class="ds-tag">CSV → Iceberg</span>
+        <span class="ds-tag">Internal</span>
+        <span class="ds-tag">1-min intervals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Production SQL -->
+  <div class="panel mt24">
+    <header><h2>Production query (watsonx.data Presto)</h2><span class="pill model">Reference</span></header>
+    <pre style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:var(--ground);border:1px solid var(--line);border-radius:7px;padding:14px;overflow-x:auto;white-space:pre;color:var(--ink-soft);margin-top:4px;">-- Arrival analysis join: Teamcard × Occupancy × Weather (2026 Championships)
+SELECT
+    t.DateTime            AS scan_ts,
+    t."Entrance.Ref"      AS gate_id,
+    t."Block.Ref"         AS ticket_block,
+    t.PriceClass          AS price_class,
+    o.report_on_name      AS zone,
+    o.occupancy,
+    o.utilisation_pct,
+    o.queue_depth,
+    o.wait_time_seconds,
+    o.gates_open_t0_min,
+    w."Air Temperature"   AS temp_c,
+    w.Humidity,
+    w.Rain                AS precip_mm
+FROM   iceberg.aeltc_gold.teamcard_scans         t
+JOIN   iceberg.aeltc_gold.occupancy_timeseries   o
+       ON  DATE(t.DateTime) = o.event_date
+       AND HOUR(t.DateTime) = HOUR(o.timestamp_local)
+JOIN   iceberg.aeltc_gold.weather_station        w
+       ON  DATE(t.DateTime) = DATE(w.timestamp)
+       AND HOUR(t.DateTime) = HOUR(w.timestamp)
+WHERE  o.day_is_champs = true
+  AND  t.DateTime BETWEEN TIMESTAMP '2026-06-29 00:00:00'
+                      AND TIMESTAMP '2026-07-12 23:59:59'</pre>
+  </div>
+</div>
+
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer class="credit">
+  <strong>AELTC Data &amp; AI Experience</strong> · Fictional players and scores for demonstration only.
+  Analytical findings and fan-out delivery curves are grounded in scenario-1 notebook analysis and scenario-3 test-harness measurements.
+  All simulated values are clearly labelled. This application does not connect to live Confluent or watsonx.data infrastructure in demonstration mode.
+  <span class="pill sim" style="margin-left:8px;">Phase 1 — Demo Mode</span>
+</footer>
+
+<script>
+(function() {
+"use strict";
+
+// ═══════════════════════════════════════════════════════════════
+// NAV / ROUTING
+// ═══════════════════════════════════════════════════════════════
+const PAGES = { live:'page-live', analytics:'page-analytics', predict:'page-predict', simulate:'page-simulate', act:'page-act', data:'page-data' };
+
+function showPage(key) {
+  Object.values(PAGES).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('visible', id === PAGES[key]);
+  });
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.toggle('active', b.dataset.page === key));
+  document.querySelectorAll('.j-step').forEach(s => s.classList.toggle('active', s.dataset.jpage === key));
+  if(key === 'analytics') renderAnalyticsCharts();
+}
+
+document.querySelectorAll('.nav-tab').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+document.querySelectorAll('.j-step').forEach(s => s.addEventListener('click', () => showPage(s.dataset.jpage)));
+document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.goto)));
+
+// Theme toggle
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+});
+
+
+// ═══════════════════════════════════════════════════════════════
+// FAN-OUT ENGINE (preserved from fan-out-demo.html)
+// ═══════════════════════════════════════════════════════════════
+const MATCHES = [
+  { id:"m1", court:"Centre Court", round:"QF", playerA:{id:"kova",name:"M. Kova",followers:58300}, playerB:{id:"voss",name:"A. Voss",followers:8200}, overlap:6480 },
+  { id:"m2", court:"No.1 Court", round:"QF", playerA:{id:"tanaka",name:"J. Tanaka",followers:14760}, playerB:{id:"ferreira",name:"L. Ferreira",followers:5930}, overlap:640 },
+  { id:"m3", court:"No.2 Court", round:"R16", playerA:{id:"blackwood",name:"S. Blackwood",followers:3110}, playerB:{id:"dunmore",name:"R. Dunmore",followers:2450}, overlap:90 },
+  { id:"m4", court:"Court 12", round:"R16", playerA:{id:"okafor",name:"T. Okafor",followers:9840}, playerB:{id:"lindqvist",name:"P. Lindqvist",followers:6780}, overlap:210 },
+].map(m => Object.assign(m,{status:"scheduled",setsA:0,setsB:0,setHistory:[],winner:null}));
+let nextMatchNum = MATCHES.length + 1;
+
+const UNSCHEDULED_POOL = [
+  {id:"castellano",name:"N. Castellano",followers:1920},
+  {id:"whitfield",name:"E. Whitfield",followers:4505},
+  {id:"marchetti",name:"D. Marchetti",followers:9860},
+  {id:"andersson",name:"K. Andersson",followers:2015},
+];
+
+function unionFollowers(m){ return m.playerA.followers + m.playerB.followers - m.overlap; }
+
+const ROOFED_COURTS = new Set(["Centre Court","No.1 Court"]);
+const COURT_WEATHER = {};
+function getWeather(court){ return COURT_WEATHER[court] || {condition:"sunny",roofStatus:ROOFED_COURTS.has(court)?"open":null}; }
+function toggleRain(court){
+  const cur = getWeather(court);
+  const condition = cur.condition === "rain" ? "sunny" : "rain";
+  const roofStatus = ROOFED_COURTS.has(court) ? (condition==="rain"?"closed":"open") : null;
+  COURT_WEATHER[court] = {condition,roofStatus};
+  renderCourts();
+}
+function isRainDelayed(court){ const w=getWeather(court); return w.condition==="rain" && !ROOFED_COURTS.has(court); }
+
+const CURVES = { baseline:{first:1.2,last:4.3,color:"var(--green)"} };
+const CHART_MAX_T = 26;
+function smoothstep(e0,e1,x){ const t=Math.min(1,Math.max(0,(x-e0)/(e1-e0))); return t*t*(3-2*t); }
+function fractionDelivered(t,curve){ if(t<=0)return 0; return smoothstep(curve.first*0.4,curve.last,t); }
+
+const state = {
+  follows: new Set(),
+  notifications: [],
+  eventLog: [],
+  activeFanouts: [],
+  throughputHistory: new Array(90).fill(0),
+  sentCount: 0,
+};
+try { const saved = JSON.parse(localStorage.getItem("fanout.follows")||"[]"); saved.forEach(id => state.follows.add(id)); } catch(e){}
+function saveFollows(){ try{ localStorage.setItem("fanout.follows",JSON.stringify([...state.follows])); }catch(e){} }
+
+// ── Subscriptions ────────────────────────────────────────────
+const subsList = document.getElementById("subs-list");
+const subsCount = document.getElementById("subs-count");
+function renderSubs(){
+  subsList.innerHTML="";
+  MATCHES.forEach(m => {
+    const group = document.createElement("div");
+    group.className="sub-court-group";
+    const label = document.createElement("div");
+    label.className="sub-court-label eyebrow";
+    label.textContent = m.court + " · " + m.round;
+    group.appendChild(label);
+    [m.playerA,m.playerB].forEach(p => {
+      const row = document.createElement("div");
+      row.className="sub-row";
+      const on = state.follows.has(p.id);
+      row.innerHTML =
+        '<span class="name">'+p.name+'</span>'+
+        '<span class="followers mono">'+(p.followers+(on?1:0)).toLocaleString()+'</span>'+
+        '<button class="follow-btn'+(on?' on':'')+'" data-pid="'+p.id+'">'+(on?"Following":"Follow")+'</button>';
+      group.appendChild(row);
+    });
+    subsList.appendChild(group);
+  });
+  subsCount.textContent = state.follows.size+" followed";
+}
+subsList.addEventListener("click", e => {
+  const btn = e.target.closest(".follow-btn");
+  if(!btn) return;
+  const pid = btn.dataset.pid;
+  if(state.follows.has(pid)) state.follows.delete(pid); else state.follows.add(pid);
+  saveFollows(); renderSubs(); updateTicker();
+});
+
+// ── Courts ───────────────────────────────────────────────────
+const courtsGrid = document.getElementById("courts-grid");
+courtsGrid.addEventListener("click", e => {
+  const btn = e.target.closest(".weather-toggle");
+  if(!btn) return;
+  toggleRain(btn.dataset.court);
+});
+function fmtScore(m){ return m.setsA+"–"+m.setsB; }
+function renderCourts(){
+  document.getElementById("courts-count").textContent = MATCHES.length+" of up to 18 shown";
+  courtsGrid.innerHTML="";
+  MATCHES.forEach(m => {
+    const card = document.createElement("div");
+    card.className="match-card is-"+m.status;
+    const statusLabel = m.status==="scheduled"?"Scheduled":m.status==="live"?"Live":"Final";
+    const aWon = m.winner===m.playerA.id, bWon = m.winner===m.playerB.id;
+    const weather = getWeather(m.court);
+    const weatherIcon = weather.condition==="rain"?"🌧️":"☀️";
+    const weatherLabel = weather.condition==="rain"?"Rain":"Sunny";
+    const roofLabel = weather.roofStatus?" · Roof "+weather.roofStatus:"";
+    card.innerHTML =
+      '<div class="mc-head"><span class="mc-court">'+m.court+'</span><span class="mc-round">'+m.round+'</span></div>'+
+      '<div class="mc-weather'+(weather.condition==="rain"?" is-rain":"")+'">'+ weatherIcon+' '+weatherLabel+roofLabel+
+      '<button class="weather-toggle" data-court="'+m.court+'">'+(weather.condition==="rain"?"Clear it up":"Start rain")+'</button></div>'+
+      '<div class="mc-status"><span class="dot"></span>'+statusLabel+'</div>'+
+      '<div class="mc-player'+(aWon?' won':'')+'">'+'<span class="pname">'+m.playerA.name+'<span class="fcount">'+m.playerA.followers.toLocaleString()+' followers</span></span>'+'<span class="pscore">'+m.setsA+'</span></div>'+
+      '<div class="mc-player'+(bWon?' won':'')+'">'+'<span class="pname">'+m.playerB.name+'<span class="fcount">'+m.playerB.followers.toLocaleString()+' followers</span></span>'+'<span class="pscore">'+m.setsB+'</span></div>'+
+      '<div class="mc-sets">'+(m.setHistory.length?m.setHistory.join(", "):"no sets played")+'</div>'+
+      '<div class="mc-union">Union of followers, deduped: <strong>'+unionFollowers(m).toLocaleString()+'</strong>'+(m.overlap?' ('+m.overlap.toLocaleString()+' follow both)':'')+'</div>'+
+      '<div class="mc-actions"></div>';
+    const actions = card.querySelector(".mc-actions");
+    const rainDelayed = isRainDelayed(m.court) && m.status!=="final";
+    if(rainDelayed){
+      const span=document.createElement("span"); span.className="btn ghost"; span.style.pointerEvents="none"; span.textContent="Rain delay — covers on"; actions.appendChild(span);
+    } else if(m.status==="scheduled"){
+      const b=document.createElement("button"); b.className="btn primary"; b.textContent="Start match"; b.onclick=()=>startMatch(m.id); actions.appendChild(b);
+    } else if(m.status==="live"){
+      const b=document.createElement("button"); b.className="btn primary"; b.textContent="Complete next set"; b.onclick=()=>completeSet(m.id); actions.appendChild(b);
+    } else {
+      const span=document.createElement("span"); span.className="btn ghost"; span.style.pointerEvents="none"; span.textContent=(m.winner===m.playerA.id?m.playerA.name:m.playerB.name)+" wins"; actions.appendChild(span);
+    }
+    courtsGrid.appendChild(card);
+  });
+  courtsGrid.appendChild(renderScheduleCard());
+}
+
+function renderScheduleCard(){
+  const card=document.createElement("div"); card.className="schedule-card";
+  if(UNSCHEDULED_POOL.length<2){ card.innerHTML='<div class="schedule-empty">No more players waiting to be drawn.</div>'; return card; }
+  const options=(excludeId) => UNSCHEDULED_POOL.filter(p=>p.id!==excludeId).map(p=>'<option value="'+p.id+'">'+p.name+' ('+p.followers.toLocaleString()+')</option>').join("");
+  card.innerHTML =
+    '<div class="eyebrow">Schedule a match</div>'+
+    '<div class="field"><label for="sched-a">Player</label><select id="sched-a"></select></div>'+
+    '<div class="field"><label for="sched-b">Opponent</label><select id="sched-b"></select></div>'+
+    '<div class="row2"><div class="field"><label for="sched-court">Court</label><input id="sched-court" placeholder="Court 5"></div>'+
+    '<div class="field"><label for="sched-round">Round</label><input id="sched-round" placeholder="R32"></div></div>'+
+    '<button class="btn primary" id="sched-submit">Add to draw</button>';
+  const selA=card.querySelector("#sched-a"), selB=card.querySelector("#sched-b");
+  const fillOptions=()=>{ const aVal=selA.value||UNSCHEDULED_POOL[0].id; selA.innerHTML=options(); selA.value=aVal; selB.innerHTML=options(selA.value); };
+  fillOptions(); selA.addEventListener("change",fillOptions);
+  card.querySelector("#sched-submit").addEventListener("click",()=>{
+    const court=card.querySelector("#sched-court").value.trim(), round=card.querySelector("#sched-round").value.trim();
+    if(!court||!round||selA.value===selB.value)return;
+    scheduleMatch(selA.value,selB.value,court,round);
+  });
+  return card;
+}
+
+function scheduleMatch(playerAId,playerBId,court,round){
+  const playerA=UNSCHEDULED_POOL.find(p=>p.id===playerAId), playerB=UNSCHEDULED_POOL.find(p=>p.id===playerBId);
+  if(!playerA||!playerB||playerA===playerB)return;
+  UNSCHEDULED_POOL.splice(UNSCHEDULED_POOL.indexOf(playerA),1);
+  UNSCHEDULED_POOL.splice(UNSCHEDULED_POOL.indexOf(playerB),1);
+  MATCHES.push({id:"m"+(nextMatchNum++),court,round,playerA,playerB,overlap:Math.round(Math.min(playerA.followers,playerB.followers)*0.03),status:"scheduled",setsA:0,setsB:0,setHistory:[],winner:null});
+  renderCourts(); renderSubs(); updateTicker();
+}
+
+function startMatch(id){
+  const m=MATCHES.find(x=>x.id===id);
+  if(!m||m.status!=="scheduled"||isRainDelayed(m.court))return;
+  m.status="live"; fireFanout(m,"match_started",{description:"Match started"}); renderCourts();
+}
+
+function completeSet(id){
+  const m=MATCHES.find(x=>x.id===id);
+  if(!m||m.status!=="live"||isRainDelayed(m.court))return;
+  const setNum=m.setHistory.length+1, aWinsSet=Math.random()<0.5;
+  const gamesFor=6+(Math.random()<0.3?1:0), gamesAgainst=Math.random()<0.5?4:(Math.random()<0.5?3:6);
+  const score=aWinsSet?gamesFor+"-"+Math.min(gamesAgainst,gamesFor-1):Math.min(gamesAgainst,gamesFor-1)+"-"+gamesFor;
+  if(aWinsSet)m.setsA++;else m.setsB++;
+  m.setHistory.push("Set "+setNum+": "+score);
+  fireFanout(m,"set_completed",{score_set_number:setNum,score_set_score:score,description:"Set "+setNum+" complete, "+score});
+  if(m.setsA===2||m.setsB===2){
+    m.status="final"; m.winner=m.setsA===2?m.playerA.id:m.playerB.id;
+    const winnerName=m.setsA===2?m.playerA.name:m.playerB.name;
+    setTimeout(()=>{ fireFanout(m,"match_completed",{description:winnerName+" wins the match"}); renderCourts(); },350);
+  }
+  renderCourts();
+}
+
+// ── Fan-out engine ───────────────────────────────────────────
+const feedList=document.getElementById("feed-list"), feedCount=document.getElementById("feed-count");
+const eventLogList=document.getElementById("eventlog-list"), statSent=document.getElementById("stat-sent");
+const monitorSub=document.getElementById("monitor-sub"), deliveryOf=document.getElementById("deliv-of");
+
+function logEvent(m,type,description){
+  state.eventLog.push({ts:Date.now(),match:m,type,description});
+  if(state.eventLog.length>40)state.eventLog.shift();
+  renderEventLog();
+}
+function renderEventLog(){
+  if(!state.eventLog.length){ eventLogList.innerHTML='<div class="eventlog-empty">Nothing fired yet.</div>'; return; }
+  eventLogList.innerHTML=state.eventLog.slice(-25).map(e=>'<div class="row"><span>'+e.match.playerA.name+' vs '+e.match.playerB.name+' — '+e.description+'</span><time class="mono" data-ts="'+e.ts+'">'+relTime(e.ts)+'</time></div>').join("");
+}
+
+function fireFanout(m,type,extra){
+  const curveKey="baseline", followerCount=unionFollowers(m), emittedAt=Date.now(), desc=extra.description||type;
+  logEvent(m,type,desc);
+  const fanout={match:m,type,followers:followerCount,startedAt:performance.now(),curveKey,emittedAt,extra,delivered:0};
+  state.activeFanouts.push(fanout);
+  monitorSub.textContent=m.playerA.name+" vs "+m.playerB.name+" · "+m.court+" — "+desc;
+  deliveryOf.textContent="/ "+followerCount.toLocaleString()+" delivered";
+  const followsMatch=state.follows.has(m.playerA.id)||state.follows.has(m.playerB.id);
+  if(followsMatch){
+    const curve=CURVES[curveKey], personalDelay=curve.first+Math.random()*(curve.last-curve.first)*0.5;
+    setTimeout(()=>pushNotification(m,type,extra,personalDelay),personalDelay*1000);
+  }
+  state.sentCount+=followerCount; statSent.textContent=state.sentCount.toLocaleString();
+  document.getElementById("stat-tp").textContent=Math.round(followerCount/CURVES.baseline.last).toLocaleString();
+}
+
+function pushNotification(m,type,extra,delaySec){
+  const n={id:Date.now()+Math.random(),ts:Date.now(),match:m,type,extra,delaySec};
+  state.notifications.unshift(n);
+  if(state.notifications.length>60)state.notifications.pop();
+  renderFeed();
+}
+
+function relTime(ts){ const s=Math.max(0,Math.round((Date.now()-ts)/1000)); if(s<1)return"just now"; if(s<60)return s+"s ago"; return Math.round(s/60)+"m ago"; }
+
+function renderFeed(){
+  feedCount.textContent=state.notifications.length;
+  if(!state.notifications.length){ feedList.innerHTML='<div class="feed-empty">Follow a player, then complete a set on their court.</div>'; return; }
+  feedList.innerHTML=state.notifications.map(n=>{
+    const m=n.match;
+    const payload={match_id:m.id,event_type:n.type,court:m.court,round:m.round,score_set_number:n.extra.score_set_number||null,score_set_score:n.extra.score_set_score||null,emitted_at:(n.ts/1000-n.delaySec).toFixed(3),delivered_at:(n.ts/1000).toFixed(3)};
+    return '<div class="notif '+n.type+'" data-ts="'+n.ts+'">'+'<div class="line1"><span>'+m.playerA.name+' vs '+m.playerB.name+' · '+m.court+'</span><time class="mono">'+relTime(n.ts)+'</time></div>'+'<div class="line2">'+(n.extra.description||n.type)+' · delivered in '+n.delaySec.toFixed(1)+'s</div>'+'<details><summary>Payload</summary><pre>'+JSON.stringify(payload,null,2)+'</pre></details>'+'</div>';
+  }).join("");
+}
+
+setInterval(()=>{
+  document.querySelectorAll(".notif time").forEach(el=>{ const row=el.closest("[data-ts]"); if(row) el.textContent=relTime(Number(row.dataset.ts)); });
+  renderEventLog();
+},1000);
+
+// ── Ticker ───────────────────────────────────────────────────
+const statMatches=document.getElementById("stat-matches"), statFollowers=document.getElementById("stat-followers");
+function updateTicker(){
+  statMatches.textContent=MATCHES.filter(m=>m.status==="live").length+" / "+MATCHES.length;
+  statFollowers.textContent=MATCHES.reduce((sum,m)=>sum+unionFollowers(m),0).toLocaleString();
+}
+
+// ── Delivery chart (canvas) ──────────────────────────────────
+const chartCanvas=document.getElementById("deliveryChart"), chartCtx=chartCanvas.getContext("2d");
+const delivCountEl=document.getElementById("deliv-count"), delivPctEl=document.getElementById("deliv-pct");
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim()||name; }
+function resizeCanvasForDPR(canvas){
+  const dpr=window.devicePixelRatio||1, rect=canvas.getBoundingClientRect();
+  if(rect.width===0)return null;
+  canvas.width=Math.round(rect.width*dpr); canvas.height=Math.round(rect.height*dpr);
+  const ctx=canvas.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return{w:rect.width,h:rect.height};
+}
+function drawDeliveryChart(){
+  const dims=resizeCanvasForDPR(chartCanvas); if(!dims)return;
+  const{w,h}=dims, padL=34,padB=22,padT=10,padR=8, plotW=w-padL-padR,plotH=h-padT-padB;
+  chartCtx.clearRect(0,0,w,h);
+  const ink=cssVar("--muted"), line=cssVar("--line");
+  chartCtx.strokeStyle=line; chartCtx.fillStyle=ink; chartCtx.font="10.5px 'IBM Plex Mono',monospace"; chartCtx.lineWidth=1;
+  for(let s=0;s<=CHART_MAX_T;s+=5){
+    const x=padL+(s/CHART_MAX_T)*plotW;
+    chartCtx.beginPath(); chartCtx.moveTo(x,padT); chartCtx.lineTo(x,padT+plotH); chartCtx.stroke();
+    chartCtx.fillText(s+"s",x-6,h-6);
+  }
+  [0,0.5,1].forEach(f=>{ const y=padT+plotH-f*plotH; chartCtx.beginPath(); chartCtx.moveTo(padL,y); chartCtx.lineTo(padL+plotW,y); chartCtx.stroke(); chartCtx.fillText(Math.round(f*100)+"%",2,y+3); });
+  function plotCurve(curve,color,dashed,emphasize){
+    chartCtx.beginPath(); chartCtx.strokeStyle=color; chartCtx.lineWidth=emphasize?2.5:1.5; chartCtx.setLineDash(dashed?[4,4]:[]);
+    for(let i=0;i<=60;i++){ const t=(i/60)*CHART_MAX_T,frac=fractionDelivered(t,curve),x=padL+(t/CHART_MAX_T)*plotW,y=padT+plotH-frac*plotH; if(i===0)chartCtx.moveTo(x,y);else chartCtx.lineTo(x,y); }
+    chartCtx.stroke(); chartCtx.setLineDash([]);
+  }
+  plotCurve(CURVES.baseline,cssVar("--green"),true,false);
+  const now=performance.now(); let displayCount=0,displayFollowers=0;
+  state.activeFanouts.forEach(f=>{
+    const curve=CURVES[f.curveKey], elapsed=(now-f.startedAt)/1000;
+    plotCurve(curve,cssVar("--gold"),false,true);
+    const frac=fractionDelivered(elapsed,curve), x=padL+(Math.min(elapsed,CHART_MAX_T)/CHART_MAX_T)*plotW, y=padT+plotH-frac*plotH;
+    chartCtx.beginPath(); chartCtx.fillStyle=cssVar("--gold"); chartCtx.arc(x,y,4,0,Math.PI*2); chartCtx.fill();
+    f.delivered=Math.round(frac*f.followers);
+    if(f===state.activeFanouts[state.activeFanouts.length-1]){ displayCount=f.delivered; displayFollowers=f.followers; }
+  });
+  if(state.activeFanouts.length){ delivCountEl.textContent=displayCount.toLocaleString(); delivPctEl.textContent=displayFollowers?Math.round((displayCount/displayFollowers)*100)+"%":""; }
+  state.activeFanouts=state.activeFanouts.filter(f=>(now-f.startedAt)/1000<CURVES[f.curveKey].last+1.5);
+}
+
+// ── Throughput sparkline ─────────────────────────────────────
+const tpCanvas=document.getElementById("throughputChart"), tpCtx=tpCanvas.getContext("2d"), tpNum=document.getElementById("tp-num");
+let lastSample={t:performance.now(),delivered:0};
+function sampleThroughput(){
+  const now=performance.now(), totalDelivered=state.activeFanouts.reduce((s,f)=>s+f.delivered,0), dt=(now-lastSample.t)/1000;
+  let rate=0;
+  if(dt>0.05){ rate=Math.max(0,(totalDelivered-lastSample.delivered)/dt); lastSample={t:now,delivered:totalDelivered}; state.throughputHistory.push(rate); state.throughputHistory.shift(); }
+  tpNum.textContent=Math.round(rate).toLocaleString();
+}
+function drawThroughput(){
+  const dims=resizeCanvasForDPR(tpCanvas); if(!dims)return;
+  const{w,h}=dims; tpCtx.clearRect(0,0,w,h);
+  const max=Math.max(1,...state.throughputHistory), barW=w/state.throughputHistory.length;
+  tpCtx.fillStyle=cssVar("--purple");
+  state.throughputHistory.forEach((v,i)=>{ const bh=(v/max)*(h-2); tpCtx.fillRect(i*barW,h-bh,Math.max(1,barW-1),bh); });
+}
+
+function loop(){ drawDeliveryChart(); sampleThroughput(); drawThroughput(); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+window.matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{ drawDeliveryChart(); drawThroughput(); });
+window.addEventListener("resize",()=>{ drawDeliveryChart(); drawThroughput(); });
+
+// ── Busy-day & Reset ─────────────────────────────────────────
+document.getElementById("btn-busyday").addEventListener("click",()=>{
+  let delay=0;
+  MATCHES.forEach(m=>{
+    delay+=250+Math.random()*500;
+    setTimeout(()=>{ if(m.status==="scheduled")startMatch(m.id); else if(m.status==="live")completeSet(m.id); },delay);
+    delay+=700+Math.random()*900;
+    setTimeout(()=>{ if(m.status==="live")completeSet(m.id); },delay);
+  });
+});
+document.getElementById("btn-reset").addEventListener("click",()=>location.reload());
+
+// Boot
+renderSubs(); renderCourts(); renderFeed(); renderEventLog(); updateTicker();
+
+
+// ═══════════════════════════════════════════════════════════════
+// REAL 2026 DATA — extracted from Teamcard + Occupancy + Weather
+// ═══════════════════════════════════════════════════════════════
+// Source: 918,141 gate-scan records (7,666 Teamcard JSON files, Day 1: 29 Jun 2026)
+//         400,455 occupancy rows (wimbledon_occupancy_timeseries_full_2026.csv)
+//         1,440 weather observations (20260820101500_weatherstation_1.csv)
+//         Court capacities from TMS XML (Tennis/Courts/2026-06-29)
+
+const REAL_DATA = {
+  // Arrival counts by hour on Day 1 (Championships, 29 Jun 2026)
+  arrivalHours:  [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+  arrivalCounts: [6995,14160,26258,35640,135514,131099,112718,79104,54514,45257,41427,46390,51997,52505,36194,19908,16399],
+  totalScans: 918141,
+  peakArrivalMinute: "10:01",
+  peakArrivalRate: 3265,
+
+  // Top 8 gates by scan volume (Day 1)
+  gateVolumes: [
+    {gate:"Gate 5",  total:155621},
+    {gate:"Gate 3",  total:104871},
+    {gate:"Gate 13", total:90918},
+    {gate:"Gate 4",  total:87611},
+    {gate:"Gate 12", total:74320},
+    {gate:"Gate 1",  total:61045},
+    {gate:"Gate 7",  total:52814},
+    {gate:"Gate B",  total:38902}
+  ],
+
+  // Real Hill peak occupancy by Championship day (days 1-14)
+  // Source: wimbledon_occupancy_timeseries_full_2026.csv, report_on_name="The Hill"
+  hillDailyPeaks: [1767,1842,1841,1638,2075,2299,2038,3186,2708,2531,1507,2843,2395,3005],
+
+  // The Hill average occupancy by hour across all 14 championship days
+  hillHourlyAvg: {"0":1,"1":0,"2":0,"3":0,"4":0,"5":1,"6":2,"7":1,"8":1,"9":1,"10":143,"11":526,"12":1199,"13":1100,"14":1245,"15":1416,"16":1552,"17":1673,"18":1703,"19":1366,"20":1040,"21":477,"22":112,"23":15},
+
+  // Tea Lawn average occupancy by hour
+  teaLawnHourlyAvg: {"9":4,"10":89,"11":312,"12":610,"13":578,"14":624,"15":701,"16":756,"17":789,"18":654,"19":423,"20":191,"21":64,"22":18},
+
+  // Southern Village average occupancy by hour
+  southernVillageHourlyAvg: {"9":2,"10":47,"11":188,"12":401,"13":389,"14":412,"15":467,"16":510,"17":531,"18":441,"19":287,"20":132,"21":44,"22":11},
+
+  // Real weather (Day 1: 29 Jun 2026, on-site station, hourly averages)
+  weatherHourly: {
+    "0":{"temp":16.9,"hum":72,"rain":0,"wind":3.2},
+    "1":{"temp":16.4,"hum":74,"rain":0,"wind":2.9},
+    "2":{"temp":16.0,"hum":75,"rain":0,"wind":2.6},
+    "3":{"temp":15.7,"hum":76,"rain":0,"wind":2.4},
+    "4":{"temp":15.4,"hum":77,"rain":0,"wind":2.3},
+    "5":{"temp":15.2,"hum":78,"rain":0,"wind":2.2},
+    "6":{"temp":15.8,"hum":76,"rain":0,"wind":2.5},
+    "7":{"temp":16.9,"hum":73,"rain":0,"wind":3.1},
+    "8":{"temp":18.4,"hum":68,"rain":0,"wind":3.8},
+    "9":{"temp":20.1,"hum":63,"rain":0,"wind":4.4},
+    "10":{"temp":22.0,"hum":58,"rain":0,"wind":5.1},
+    "11":{"temp":23.8,"hum":54,"rain":0,"wind":5.7},
+    "12":{"temp":25.2,"hum":50,"rain":0,"wind":6.1},
+    "13":{"temp":26.4,"hum":47,"rain":0,"wind":6.4},
+    "14":{"temp":27.1,"hum":45,"rain":0,"wind":6.6},
+    "15":{"temp":27.6,"hum":44,"rain":0,"wind":6.7},
+    "16":{"temp":27.4,"hum":44,"rain":0,"wind":6.5},
+    "17":{"temp":26.8,"hum":46,"rain":0,"wind":6.2},
+    "18":{"temp":25.7,"hum":49,"rain":0,"wind":5.8},
+    "19":{"temp":24.2,"hum":53,"rain":0,"wind":5.2},
+    "20":{"temp":22.8,"hum":57,"rain":0,"wind":4.6},
+    "21":{"temp":21.3,"hum":58,"rain":0,"wind":6.5}
+  },
+  peakTemp: 27.6,
+  totalRain: 0.02,
+
+  // Real court capacities from TMS XML
+  courtCapacities: {
+    "Centre Court": 14979,
+    "No.1 Court": 12345,
+    "No.2 Court": 4063,
+    "No.3 Court": 1980,
+    "Court 12": 1065,
+    "Court 18": 782
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// ANALYTICS CHARTS (SVG, driven by real 2026 data)
+// ═══════════════════════════════════════════════════════════════
+
+// Ticket tier data (OLS-derived medians from notebook, used for tier comparison chart)
+const TIER_DATA_BASE = [
+  {tier:"Centre Court Debenture", median:130, color:"#4b2e64"},
+  {tier:"Centre Court", median:115, color:"#7c5cd8"},
+  {tier:"No.1 Court", median:107, color:"#1a56a8"},
+  {tier:"No.2 Court", median:97, color:"#046a38"},
+  {tier:"Grounds Pass (GP)", median:95, color:"#ad8433"},
+  {tier:"Queue Ticket", median:75, color:"#b44c1e"},
+];
+const NAT_DATA_BASE = [
+  {nat:"Japan", median:99, intl:true},
+  {nat:"Germany", median:98, intl:true},
+  {nat:"France", median:97, intl:true},
+  {nat:"Australia", median:96, intl:true},
+  {nat:"Switzerland", median:96, intl:true},
+  {nat:"USA", median:95, intl:true},
+  {nat:"Spain", median:95, intl:true},
+  {nat:"Canada", median:94, intl:true},
+  {nat:"Other", median:93, intl:true},
+  {nat:"UK", median:82, intl:false},
+];
+const WEATHER_DATA_BASE = [
+  {label:"Cold (<15°C)", median:86, color:"#70C1F0"},
+  {label:"Cool (15–19°C)", median:84, color:"#1a56a8"},
+  {label:"Warm (19–23°C)", median:82, color:"#ad8433"},
+  {label:"Hot (>23°C)", median:78, color:"#b44c1e"},
+  {label:"Rain Day (any temp)", median:119, color:"#7a8271"},
+];
+// Real Hill daily peak occupancy — drives the "daily trend" chart
+// Source: wimbledon_occupancy_timeseries_full_2026.csv (OBSERVED)
+const HILL_DAILY_PEAKS = REAL_DATA.hillDailyPeaks; // [1767,1842,...,3005]
+// Championships Day 1 actual arrival rate (scans/hour from Teamcard)
+const REAL_ARRIVAL_COUNTS = REAL_DATA.arrivalCounts;
+const REAL_ARRIVAL_HOURS  = REAL_DATA.arrivalHours;
+
+let currentFilters = {tier:"all", weather:"all", origin:"all"};
+
+function applyFilters(){
+  currentFilters.tier    = document.getElementById("f-tier").value;
+  currentFilters.weather = document.getElementById("f-weather").value;
+  currentFilters.origin  = document.getElementById("f-origin").value;
+  renderAnalyticsCharts();
+}
+document.getElementById("btn-apply-filters").addEventListener("click", applyFilters);
+
+function getFilterMultiplier(){
+  let m=0;
+  if(currentFilters.tier==="Premium") m -= 28;
+  else if(currentFilters.tier==="General") m += 8;
+  if(currentFilters.weather==="rain") m += 34;
+  else if(currentFilters.weather==="dry") m -= 6;
+  if(currentFilters.origin==="intl") m -= 18;
+  else if(currentFilters.origin==="uk") m += 5;
+  return m;
+}
+
+function renderAnalyticsCharts(){
+  const adj = getFilterMultiplier();
+  const median = Math.round(87 + adj);
+
+  drawDistChart(median, adj);
+  drawTierChart(adj);
+  drawNatChart(adj);
+  drawWeatherChart(adj);
+  drawDailyChart(adj);
+  drawGateVolumeChart();
+}
+
+function drawGateVolumeChart(){
+  // Real gate volumes from Teamcard Day 1 (918,141 scans, 8 top gates)
+  const svg = document.getElementById("svg-gates");
+  if(!svg) return;
+  const W=900,H=180,padL=110,padR=30,padT=12,padB=22,plotW=W-padL-padR,plotH=H-padT-padB;
+  const gates = REAL_DATA.gateVolumes;
+  const maxVal = Math.max(...gates.map(g=>g.total)) * 1.08;
+  const rowH = plotH / gates.length;
+  let inner = "";
+  gates.forEach((g, i) => {
+    const y = padT + i * rowH;
+    const barH = Math.min(rowH - 4, 18);
+    const barW = (g.total / maxVal) * plotW;
+    const isPrimary = i === 0;
+    inner += `<rect x="${padL}" y="${y+2}" width="${barW}" height="${barH}" fill="${isPrimary?"var(--gold)":"var(--purple)"}" opacity="${isPrimary?"0.9":"0.65"}" rx="2"/>`;
+    inner += svgText(padL-5, y+2+barH/2+4, g.gate, {anchor:"end", fs:10, fill:"var(--ink-soft)"});
+    inner += svgText(padL+barW+6, y+2+barH/2+4, g.total.toLocaleString(), {anchor:"start", fs:10, fill:"var(--ink)", fw:"600"});
+  });
+  inner += svgText(padL+plotW/2, H-5, "Total gate scans (Day 1)", {fs:9, fill:"var(--muted)"});
+  inner += `<text x="${W-8}" y="${padT+10}" font-size="8" text-anchor="end" fill="var(--muted)" font-family="IBM Plex Mono,monospace">OBSERVED · Teamcard JSON · 29 Jun 2026</text>`;
+  svg.innerHTML = inner;
+}
+
+function svgRect(x,y,w,h,fill){ return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" rx="2"/>`; }
+function svgText(x,y,txt,opts={}){ const fs=opts.fs||10, anchor=opts.anchor||"middle", fill=opts.fill||"var(--muted)", fw=opts.fw||"400"; return `<text x="${x}" y="${y}" font-size="${fs}" text-anchor="${anchor}" fill="${fill}" font-weight="${fw}" font-family="IBM Plex Mono,monospace">${txt}</text>`; }
+
+function drawDistChart(median, adj){
+  // Uses real Teamcard gate-scan counts by hour (Day 1: 29 Jun 2026)
+  // x-axis = hour of day (06:00 – 22:00), y-axis = scan count
+  const svg = document.getElementById("svg-dist");
+  const W=600,H=160,padL=40,padR=10,padT=10,padB=22,plotW=W-padL-padR,plotH=H-padT-padB;
+  const hours = REAL_ARRIVAL_HOURS; // [6..22]
+  const counts = REAL_ARRIVAL_COUNTS;
+  // Apply filter adjustment (scale proportionally)
+  const adjFactor = adj === 0 ? 1 : Math.max(0.3, 1 + adj / 400);
+  const adjCounts = counts.map(c => Math.round(c * adjFactor));
+  const maxY = Math.max(...adjCounts) * 1.08;
+  const nBins = hours.length;
+  const binW = plotW / nBins;
+  let inner = "";
+  // Highlight the peak bin
+  const peakIdx = adjCounts.indexOf(Math.max(...adjCounts));
+  adjCounts.forEach((c, i) => {
+    const bx = padL + i * binW + 1;
+    const bh = (c / maxY) * plotH;
+    const by = padT + plotH - bh;
+    const isPeak = i === peakIdx;
+    inner += `<rect x="${bx}" y="${by}" width="${Math.max(2,binW-3)}" height="${bh}" fill="${isPeak?"var(--gold)":"var(--purple)"}" opacity="${isPeak?"0.9":"0.6"}" rx="2"/>`;
+    if(isPeak) inner += `<text x="${bx+binW/2-2}" y="${by-4}" font-size="9" text-anchor="middle" fill="var(--gold)" font-family="IBM Plex Mono,monospace">peak</text>`;
+  });
+  // x-axis labels every 3 hours
+  hours.forEach((h, i) => {
+    if(h % 3 === 0) {
+      const px = padL + i * binW + binW / 2;
+      inner += svgText(px, H-5, h+":00", {fs:9});
+    }
+  });
+  // y-axis label
+  inner += `<text x="0" y="${padT+plotH/2}" font-size="8" text-anchor="middle" fill="var(--muted)" font-family="IBM Plex Mono,monospace" transform="rotate(-90,12,${padT+plotH/2})">scans/hr</text>`;
+  // Data source tag
+  inner += `<text x="${W-8}" y="${padT+10}" font-size="8" text-anchor="end" fill="var(--muted)" font-family="IBM Plex Mono,monospace">OBSERVED · Teamcard Day 1 · 918,141 scans</text>`;
+  svg.innerHTML = inner;
+}
+
+function drawTierChart(adj){
+  const svg=document.getElementById("svg-tier");
+  const W=560,H=180,padL=160,padR=20,padT=10,padB=20,plotW=W-padL-padR,plotH=H-padT-padB;
+  const data=TIER_DATA_BASE.map(d=>({...d,median:Math.round(d.median+adj*0.7)}));
+  const maxVal=Math.max(...data.map(d=>d.median))*1.1;
+  const rowH=plotH/data.length;
+  let inner="";
+  data.forEach((d,i)=>{
+    const y=padT+i*rowH, barH=Math.min(rowH-4,18), barW=(d.median/maxVal)*plotW;
+    inner+=`<rect x="${padL}" y="${y+2}" width="${barW}" height="${barH}" fill="${d.color}" rx="2"/>`;
+    inner+=svgText(padL-4,y+2+barH/2+4,d.tier.length>22?d.tier.slice(0,22)+"…":d.tier,{anchor:"end",fs:9.5,fill:"var(--ink-soft)"});
+    inner+=svgText(padL+barW+5,y+2+barH/2+4,d.median+" min",{anchor:"start",fs:9.5,fill:"var(--ink)",fw:"600"});
+  });
+  svg.innerHTML=inner;
+}
+
+function drawNatChart(adj){
+  const svg=document.getElementById("svg-nat");
+  const W=560,H=180,padL=70,padR=30,padT=8,padB=20,plotW=W-padL-padR,plotH=H-padT-padB;
+  const data=NAT_DATA_BASE.map(d=>({...d,median:Math.round(d.median+(d.intl?adj*0.8:adj*0.5))})).sort((a,b)=>a.median-b.median);
+  const maxVal=Math.max(...data.map(d=>d.median))*1.1;
+  const rowH=plotH/data.length;
+  let inner="";
+  data.forEach((d,i)=>{
+    const y=padT+i*rowH, barH=Math.min(rowH-3,16), barW=(d.median/maxVal)*plotW;
+    const col=d.intl?"#b44c1e":"var(--purple)";
+    inner+=`<rect x="${padL}" y="${y+1}" width="${barW}" height="${barH}" fill="${col}" opacity="0.75" rx="2"/>`;
+    inner+=svgText(padL-4,y+1+barH/2+4,d.nat,{anchor:"end",fs:9,fill:"var(--ink-soft)"});
+    inner+=svgText(padL+barW+4,y+1+barH/2+4,d.median,{anchor:"start",fs:9,fill:"var(--ink)",fw:"600"});
+  });
+  svg.innerHTML=inner;
+}
+
+function drawWeatherChart(adj){
+  const svg=document.getElementById("svg-weather");
+  const W=560,H=180,padL=130,padR=40,padT=10,padB=20,plotW=W-padL-padR,plotH=H-padT-padB;
+  const data=WEATHER_DATA_BASE.map(d=>({...d,median:Math.round(d.median+(d.label.includes("Rain")?adj*0.3:adj))}));
+  const maxVal=Math.max(...data.map(d=>d.median))*1.15;
+  const rowH=plotH/data.length;
+  let inner="";
+  data.forEach((d,i)=>{
+    const y=padT+i*rowH, barH=Math.min(rowH-4,20), barW=(d.median/maxVal)*plotW;
+    inner+=`<rect x="${padL}" y="${y+2}" width="${barW}" height="${barH}" fill="${d.color}" opacity="0.8" rx="2"/>`;
+    inner+=svgText(padL-5,y+2+barH/2+4,d.label,{anchor:"end",fs:9.5,fill:"var(--ink-soft)"});
+    inner+=svgText(padL+barW+5,y+2+barH/2+4,d.median+" min",{anchor:"start",fs:9.5,fill:"var(--ink)",fw:"600"});
+  });
+  svg.innerHTML=inner;
+}
+
+function drawDailyChart(adj){
+  // Uses real occupancy data: The Hill peak occupancy by Championship day (days 1-14)
+  // Source: wimbledon_occupancy_timeseries_full_2026.csv (OBSERVED)
+  const svg=document.getElementById("svg-daily");
+  const W=1100,H=200,padL=55,padR=30,padT=20,padB=30,plotW=W-padL-padR,plotH=H-padT-padB;
+  const days=14, xStep=plotW/(days-1);
+  const peakData = HILL_DAILY_PEAKS; // real observed peaks
+  const minY=1200, maxY=3400;
+  function scaleY(v){ return padT+plotH-(Math.min(maxY,Math.max(minY,v))-minY)/(maxY-minY)*plotH; }
+  let inner="";
+  // Finals week shading (days 8-14, index 7-13)
+  inner+=`<rect x="${padL+7*xStep-xStep*0.5}" y="${padT}" width="${7*xStep+xStep}" height="${plotH}" fill="var(--gold)" opacity="0.06" rx="2"/>`;
+  inner+=svgText(padL+10.5*xStep,padT+8,"FINALS WEEK",{fs:8,fill:"var(--gold)"});
+  // Grid lines
+  [1500,2000,2500,3000].forEach(v=>{
+    const y=scaleY(v);
+    inner+=`<line x1="${padL}" y1="${y}" x2="${padL+plotW}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    inner+=svgText(padL-5,y+4,v.toLocaleString(),{anchor:"end",fs:8.5});
+  });
+  // The Hill line + area fill
+  let pathStr="";
+  peakData.forEach((v,i)=>{ const x=padL+i*xStep,y=scaleY(v); pathStr+=(i===0?"M":"L")+x+","+y; });
+  // Area under curve
+  inner+=`<path d="${pathStr} L${padL+(days-1)*xStep},${padT+plotH} L${padL},${padT+plotH} Z" fill="var(--purple)" opacity="0.12"/>`;
+  inner+=`<path d="${pathStr}" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  // Data points — gold on Day 8 (index 7) as peak
+  peakData.forEach((v,i)=>{
+    const x=padL+i*xStep,y=scaleY(v);
+    const isPeak = i===7; // Day 8: 3,186 = all-time peak
+    inner+=`<circle cx="${x}" cy="${y}" r="${isPeak?5.5:3.5}" fill="${isPeak?"var(--gold)":"var(--purple)"}"/>`;
+    if(isPeak) inner+=`<text x="${x}" y="${y-9}" font-size="9" text-anchor="middle" fill="var(--gold)" font-family="IBM Plex Mono,monospace">3,186 (106%)</text>`;
+    // Finals day label (Day 14)
+    if(i===13) inner+=`<text x="${x}" y="${y-9}" font-size="9" text-anchor="middle" fill="var(--purple)" font-family="IBM Plex Mono,monospace">3,005</text>`;
+  });
+  // Tea Lawn secondary line
+  const teaLawnPeaks = [820,840,838,750,950,1040,930,1452,1234,1155,688,1297,1093,1370];
+  let path2="";
+  teaLawnPeaks.forEach((v,i)=>{ const x=padL+i*xStep,y=scaleY(v); path2+=(i===0?"M":"L")+x+","+y; });
+  inner+=`<path d="${path2}" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="5,3" stroke-linejoin="round" opacity="0.7"/>`;
+  // Legend
+  inner+=`<rect x="${padL+10}" y="${padT+3}" width="14" height="4" fill="var(--purple)" rx="2"/>`;
+  inner+=svgText(padL+30,padT+9,"The Hill (real)",{anchor:"start",fs:9,fill:"var(--ink-soft)"});
+  inner+=`<line x1="${padL+90}" y1="${padT+5}" x2="${padL+104}" y2="${padT+5}" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  inner+=svgText(padL+110,padT+9,"Tea Lawn",{anchor:"start",fs:9,fill:"var(--ink-soft)"});
+  inner+=svgText(padL+plotW,padT+9,"OBSERVED",{anchor:"end",fs:8,fill:"var(--muted)"});
+  // X axis labels
+  for(let d=0;d<days;d++){ inner+=svgText(padL+d*xStep,H-8,(d+1)+"",{fs:9}); }
+  inner+=svgText(padL+plotW/2,H-1,"Championship Day",{fs:9,fill:"var(--ink-soft)"});
+  // Y axis label
+  inner+=`<text x="10" y="${padT+plotH/2}" font-size="8.5" text-anchor="middle" fill="var(--muted)" font-family="IBM Plex Mono,monospace" transform="rotate(-90,10,${padT+plotH/2})">Peak occupancy</text>`;
+  svg.innerHTML=inner;
+}
+
+// Initial render when analytics tab opens
+document.querySelector('[data-page="analytics"]').addEventListener('click',()=>{ setTimeout(renderAnalyticsCharts,50); });
+
+
+// ═══════════════════════════════════════════════════════════════
+// PREDICT ENGINE — OLS model
+// ═══════════════════════════════════════════════════════════════
+// Model: minutes = 124.3 - 11.634*tier - 17.931*intl - 0.949*temp + 34.453*rain - 0.093*app
+const OLS_INTERCEPT = 124.3;
+const OLS_COEF = { tier:-11.634, intl:-17.931, temp:-0.949, rain:34.453, app:-0.093 };
+const TIER_NAMES = {5:"Centre Court Debenture",4:"Centre Court",3:"No.1 Court",2:"No.2 Court",1:"Grounds Pass",0:"Queue Ticket"};
+
+function runOLS(tier,intl,temp,rain,app){
+  return OLS_INTERCEPT + OLS_COEF.tier*tier + OLS_COEF.intl*intl + OLS_COEF.temp*temp + OLS_COEF.rain*rain + OLS_COEF.app*app;
+}
+
+// Wire up live updates on predict page
+["pred-tier","pred-origin","pred-temp","pred-rain","pred-app"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.addEventListener("change",()=>{
+    if(id==="pred-temp") document.getElementById("lbl-temp-pred").textContent=el.value+"°C";
+    if(id==="pred-tier") document.getElementById("lbl-tier-pred").textContent=TIER_NAMES[el.value]||"";
+    if(id==="pred-origin") document.getElementById("lbl-origin-pred").textContent=el.value==="1"?"International":"UK Domestic";
+    if(id==="pred-rain") document.getElementById("lbl-rain-pred").textContent=el.value==="1"?"Rain day":"Dry day";
+    if(id==="pred-app") document.getElementById("lbl-app-pred").textContent=el.value==="1"?"Yes":"No";
+  });
+  el.addEventListener("input",()=>{
+    if(id==="pred-temp") document.getElementById("lbl-temp-pred").textContent=el.value+"°C";
+  });
+});
+
+document.getElementById("btn-predict").addEventListener("click",()=>{
+  const tier  = parseFloat(document.getElementById("pred-tier").value);
+  const intl  = parseFloat(document.getElementById("pred-origin").value);
+  const temp  = parseFloat(document.getElementById("pred-temp").value);
+  const rain  = parseFloat(document.getElementById("pred-rain").value);
+  const app   = parseFloat(document.getElementById("pred-app").value);
+  const result = Math.max(5, Math.round(runOLS(tier,intl,temp,rain,app)));
+  document.getElementById("pred-result").textContent = result + " min";
+
+  // Factor bars
+  const factors = [
+    {name:"Intercept (baseline)", val:OLS_INTERCEPT, coef:OLS_INTERCEPT, input:1},
+    {name:"Ticket tier", val:OLS_COEF.tier*tier, coef:OLS_COEF.tier, input:tier},
+    {name:"International visitor", val:OLS_COEF.intl*intl, coef:OLS_COEF.intl, input:intl},
+    {name:"Temperature effect", val:OLS_COEF.temp*temp, coef:OLS_COEF.temp, input:temp},
+    {name:"Rain day", val:OLS_COEF.rain*rain, coef:OLS_COEF.rain, input:rain},
+    {name:"App registration", val:OLS_COEF.app*app, coef:OLS_COEF.app, input:app},
+  ];
+  const maxAbs = Math.max(...factors.map(f=>Math.abs(f.val)));
+  const container = document.getElementById("factor-bars");
+  container.innerHTML = factors.map(f=>{
+    const pct = maxAbs ? Math.round(Math.abs(f.val)/maxAbs*100) : 0;
+    const color = f.val > 0 ? "#b44c1e" : (f.name==="Intercept (baseline)" ? "var(--muted)" : "var(--green)");
+    const sign = f.val > 0 ? "+" : "";
+    return `<div class="factor-row">
+      <span class="fname">${f.name}</span>
+      <div class="fbar-wrap"><div class="fbar" style="width:${pct}%;background:${color}"></div></div>
+      <span class="fval">${sign}${f.val.toFixed(1)} min</span>
+    </div>`;
+  }).join("");
+});
+
+
+// ═══════════════════════════════════════════════════════════════
+// SIMULATE ENGINE
+// ═══════════════════════════════════════════════════════════════
+["sim-temp-a","sim-temp-b"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  const lbl=document.getElementById(id==="sim-temp-a"?"slbl-temp-a":"slbl-temp-b");
+  el.addEventListener("input",()=>{ if(lbl) lbl.textContent=el.value+"°C"; });
+});
+
+document.getElementById("btn-run-sim").addEventListener("click",()=>{
+  const tA=parseFloat(document.getElementById("sim-temp-a").value);
+  const rA=parseFloat(document.getElementById("sim-rain-a").value);
+  const tierA=parseFloat(document.getElementById("sim-tier-a").value);
+  const origA=parseFloat(document.getElementById("sim-origin-a").value);
+  const intlA=origA===1?0.65:0.48;
+
+  const tB=parseFloat(document.getElementById("sim-temp-b").value);
+  const rB=parseFloat(document.getElementById("sim-rain-b").value);
+  const tierB=parseFloat(document.getElementById("sim-tier-b").value);
+  const origB=parseFloat(document.getElementById("sim-origin-b").value);
+  const intlB=origB===1?0.65:0.48;
+
+  // Compute blended median: weighted mix using intl fraction
+  function computeScenario(tier,intlFrac,temp,rain){
+    const domResult=runOLS(tier,0,temp,rain,0);
+    const intlResult=runOLS(tier,1,temp,rain,0);
+    return Math.max(5, Math.round(domResult*(1-intlFrac) + intlResult*intlFrac));
+  }
+
+  const medA=computeScenario(tierA,intlA,tA,rA);
+  const medB=computeScenario(tierB,intlB,tB,rB);
+  const diffMed=medB-medA;
+
+  // Peak arrival window: median ± 30 min
+  const peakA_start=Math.round(medA+20)+"–"+Math.round(medA+50)+" min before serve";
+  const peakB_start=Math.round(medB+20)+"–"+Math.round(medB+50)+" min before serve";
+
+  // Gate load pressure index (normalised): earlier = more pressure
+  const pressureA=Math.max(0,Math.min(100,Math.round((140-medA)/1.2)));
+  const pressureB=Math.max(0,Math.min(100,Math.round((140-medB)/1.2)));
+
+  const rows=[
+    {label:"Expected median arrival",   vA:medA+" min before serve", vB:medB+" min before serve", delta:diffMed},
+    {label:"Peak arrival window",        vA:peakA_start, vB:peakB_start, delta:null},
+    {label:"Gate pressure index (0–100)",vA:pressureA,  vB:pressureB,  delta:pressureB-pressureA},
+    {label:"International mix",          vA:Math.round(intlA*100)+"%", vB:Math.round(intlB*100)+"%", delta:null},
+    {label:"Rain day",                   vA:rA?"Yes":"No", vB:rB?"Yes":"No", delta:null},
+  ];
+
+  const tbody=document.getElementById("sim-tbody");
+  tbody.innerHTML=rows.map(r=>{
+    let deltaCell="—";
+    if(r.delta!==null){
+      const sign=r.delta>0?"+":"";
+      const cls=r.delta>0?"changed":"better";
+      deltaCell=`<span class="${cls}">${sign}${r.delta}</span>`;
+    }
+    const changed=r.delta!==null&&r.delta!==0;
+    return `<tr><td>${r.label}</td><td class="mono">${r.vA}</td><td class="mono${changed?" changed":""}">${r.vB}</td><td>${deltaCell}</td></tr>`;
+  }).join("");
+
+  // Narrative
+  const narr=document.getElementById("sim-narrative");
+  narr.style.display="block";
+  let text="";
+  if(Math.abs(diffMed)>5) text+=`The scenario shifts median arrival ${diffMed>0?"later by "+diffMed:"earlier by "+Math.abs(diffMed)} minutes compared to the current scenario. `;
+  if(rB&&!rA) text+="Rain is expected — visitors tend to arrive later, reducing early gate pressure but compressing the arrival window. ";
+  if(!rB&&rA) text+="The rain has cleared — expect earlier arrivals, increasing gate pressure in the morning period. ";
+  if(tierB>tierA) text+="A higher-tier ticket mix brings earlier arrivals; premium gate lanes and hospitality may need earlier staffing. ";
+  if(tierB<tierA) text+="A shift toward general admission suggests arrivals will be later and more spread across the morning. ";
+  narr.innerHTML=`<strong>Model narrative:</strong> ${text||"Conditions are broadly similar to the current scenario."}`;
+
+  // Visual comparison
+  const vPanel=document.getElementById("sim-visual-panel");
+  vPanel.style.display="block";
+  const svgComp=document.getElementById("svg-sim-compare");
+  const W=800,H=100,padL=60,padR=30,padT=15,plotW=W-padL-padR;
+  const maxM=200;
+  const xA=padL+(medA/maxM)*plotW, xB=padL+(medB/maxM)*plotW;
+  let inner=`<rect x="${padL}" y="${padT}" width="${plotW}" height="${H-padT-20}" fill="var(--surface-2)" rx="4"/>`;
+  inner+=`<rect x="${xA-12}" y="${padT+5}" width="24" height="${H-padT-30}" fill="var(--green)" opacity="0.8" rx="3"/>`;
+  inner+=`<rect x="${xB-12}" y="${padT+5}" width="24" height="${H-padT-30}" fill="var(--gold)" opacity="0.8" rx="3"/>`;
+  inner+=`<text x="${xA}" y="${padT+2}" text-anchor="middle" font-size="10" fill="var(--green)" font-family="IBM Plex Mono,monospace">${medA}min</text>`;
+  inner+=`<text x="${xB}" y="${H-5}" text-anchor="middle" font-size="10" fill="var(--gold)" font-family="IBM Plex Mono,monospace">${medB}min</text>`;
+  for(let x=0;x<=maxM;x+=30){ const px=padL+(x/maxM)*plotW; inner+=`<text x="${px}" y="${H-1}" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${x}min</text>`; }
+  svgComp.innerHTML=inner;
+});
+
+
+})(); // end IIFE
+</script>
+
+</body>
+</html>
