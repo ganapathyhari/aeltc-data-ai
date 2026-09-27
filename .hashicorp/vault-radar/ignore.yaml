@@ -1,0 +1,6 @@
+# Vault Radar ignore rules
+# These are false positives — no real secrets exist in this repository.
+# All entries below are auto-generated or minified library files, not credentials.
+
+- paths:
+    - "notebook/09_interactive_arrival_chart.html"

@@ -1,0 +1,48 @@
+{
+  "name": "arrival_analysis_base",
+  "version": "1.0.0",
+  "description": "Joined gate scan, customer profile, weather and match schedule data for arrival pattern analysis across the Wimbledon Championships. PII columns masked. Quality score 99.4%.",
+  "owner": "AELTC Data and Analytics Team",
+  "steward": "AELTC Data Governance",
+  "refresh_cadence": "Annually \u2014 refreshed ahead of each Championship season",
+  "quality_score": "99.4%",
+  "sensitivity": "Internal \u2014 PII masked at query time via watsonx.data policy",
+  "lineage": [
+    "access_control_system \u2192 Confluent (gate_events) \u2192 Iceberg (gate_scans)",
+    "CIAM \u2192 Confluent (customer_profiles) \u2192 Iceberg (customer_profiles)",
+    "TMS \u2192 Confluent (match_schedule) \u2192 Iceberg (match_schedule)",
+    "weather_api \u2192 batch connector \u2192 Iceberg (weather_observations)",
+    "This notebook \u2192 aeltc_arrival_analysis_base.csv \u2192 Data Product Hub"
+  ],
+  "access_policy": "AELTC Internal Analysts \u2014 email and full_name columns masked",
+  "tags": [
+    "arrivals",
+    "operations",
+    "ticket",
+    "weather",
+    "self-service",
+    "scenario1"
+  ],
+  "schema_columns": [
+    "scan_date",
+    "scan_hour",
+    "court",
+    "gate_id",
+    "ticket_tier",
+    "tier_group",
+    "tier_ordinal",
+    "nationality",
+    "is_international",
+    "registered_app",
+    "minutes_before_serve",
+    "temperature_c",
+    "precipitation_mm",
+    "is_rain_day",
+    "temp_band",
+    "first_serve_time",
+    "rain_delay_mins",
+    "day_number"
+  ],
+  "row_count": 588000,
+  "notebook": "aeltc_notebooks/scenario1_arrival_analysis_v1.0.ipynb"
+}
